@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Politique de Confidentialité | Caux-lis Perdus</title>
+    
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: { 
+                        'caux-orange': '#f97316',
+                        'caux-deep': '#020617'
+                    },
+                    fontFamily: {
+                        'main': ['Plus Jakarta Sans', 'sans-serif'],
+                        'serif': ['Fraunces', 'serif']
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;600;700;800&family=Fraunces:ital,opsz,wght@1,9..144,700;1,9..144,900&display=swap');
+        body { font-family: 'Plus Jakarta Sans', sans-serif; background-color: #fafaf9; }
+        .hero-title { font-family: 'Fraunces', serif; letter-spacing: -0.02em; }
+        .privacy-card { @apply bg-white p-10 rounded-[2.5rem] border border-slate-100 shadow-sm mb-8 transition-all hover:border-orange-100; }
+        h3 { @apply text-caux-orange font-black uppercase tracking-[0.2em] text-[10px] mb-4; }
+        h4 { @apply text-caux-deep font-extrabold text-xl mb-4 italic; }
+        p, li { @apply text-slate-500 leading-relaxed text-sm font-medium mb-4; }
+        .icon-box { @apply w-12 h-12 bg-orange-50 rounded-xl flex items-center justify-center text-caux-orange mb-6; }
+    </style>
+</head>
+<body class="antialiased">
+
+    <nav class="w-full py-8 px-6">
+        <div class="max-w-7xl mx-auto flex items-center justify-between">
+            <a href="index.html" class="flex items-center gap-3">
+                <div class="w-12 h-12 bg-white rounded-2xl flex items-center justify-center overflow-hidden shadow-lg shadow-orange-500/10 border border-slate-100">
+                    <img src="logo.png" alt="Logo Caux-lis" class="w-full h-full object-cover">
+                </div>
+                
+                <div>
+                    <span class="text-xl font-black tracking-tighter uppercase block leading-none text-caux-deep">Caux-lis</span>
+                    <span class="text-[9px] font-black uppercase tracking-[0.3em] text-caux-orange">Perdus Normandie</span>
+                </div>
+            </a>
+            <a href="index.html" class="text-[10px] font-black uppercase tracking-widest text-slate-400 hover:text-caux-orange transition">
+                <i class="fa-solid fa-arrow-left mr-2"></i> Retour
+            </a>
+        </div>
+    </nav>
+
+    <header class="pt-16 pb-16 px-6 text-center">
+        <div class="max-w-4xl mx-auto">
+            <h1 class="hero-title text-6xl text-caux-deep mb-4">Protection des <span class="text-caux-orange">Données.</span></h1>
+            <p class="text-slate-400 font-bold uppercase text-[10px] tracking-[0.3em]">Engagement RGPD - Version 2026.1</p>
+        </div>
+    </header>
+
+    <main class="max-w-5xl mx-auto px-6 pb-32">
+
+        <div class="privacy-card bg-caux-deep text-white border-none">
+            <p class="text-slate-300 italic text-lg">
+                "Chez Caux-lis Perdus, nous traitons vos données comme nos colis : avec soin et respect de la vie privée. Cette politique vous explique quelles données nous collectons et pourquoi."
+            </p>
+        </div>
+
+        <section class="privacy-card">
+            <div class="icon-box"><i class="fa-solid fa-user-tag text-xl"></i></div>
+            <h3>01. Collecte des informations</h3>
+            <p>Nous collectons des informations lorsque vous vous inscrivez sur notre site ou que vous effectuez une réservation. Les informations collectées incluent :</p>
+            <ul class="list-disc ml-5 space-y-2">
+                <li><strong>Identité :</strong> Nom et Prénom.</li>
+                <li><strong>Contact :</strong> Adresse e-mail.</li>
+                <li><strong>Activité :</strong> Historique des réservations de colis et messages envoyés via le support.</li>
+                <li><strong>Connexion :</strong> Logs de connexion sécurisés via Firebase Auth.</li>
+            </ul>
+        </section>
+
+        <section class="privacy-card">
+            <div class="icon-box"><i class="fa-solid fa-chart-line text-xl"></i></div>
+            <h3>02. Utilisation des données</h3>
+            <p>Toutes les informations que nous recueillons auprès de vous peuvent être utilisées pour :</p>
+            <ul class="list-disc ml-5 space-y-2">
+                <li>Personnaliser votre expérience et répondre à vos besoins individuels.</li>
+                <li>Pré-remplir automatiquement vos bons de réservation au poids.</li>
+                <li>Permettre le suivi de vos commandes dans votre espace client.</li>
+                <li>Vous contacter en cas de modification d'un arrivage le samedi.</li>
+                <li>Améliorer notre service client et vos besoins de prise en charge.</li>
+            </ul>
+        </section>
+
+        <section class="privacy-card">
+            <div class="icon-box"><i class="fa-solid fa-lock text-xl"></i></div>
+            <h3>03. Confidentialité et Sécurité</h3>
+            <p>
+                Nous sommes les seuls propriétaires des informations collectées sur ce site. Vos informations personnelles ne seront pas vendues, échangées, transférées, ou données à une autre société pour n'importe quelle raison, sans votre consentement.
+            </p>
+            <p>
+                Vos données sont stockées sur les serveurs sécurisés de <strong>Google Firebase</strong> (Localisation UE), bénéficiant des plus hauts standards de sécurité mondiaux.
+            </p>
+        </section>
+
+        <section class="privacy-card">
+            <div class="icon-box"><i class="fa-solid fa-fingerprint text-xl"></i></div>
+            <h3>04. Vos Droits (RGPD)</h3>
+            <p>Conformément au Règlement Général sur la Protection des Données, vous disposez des droits suivants :</p>
+            <ul class="list-disc ml-5 space-y-2">
+                <li><strong>Droit d'accès :</strong> Vous pouvez demander une copie de vos données.</li>
+                <li><strong>Droit de rectification :</strong> Vous pouvez modifier vos informations depuis votre profil.</li>
+                <li><strong>Droit à l'oubli :</strong> Vous pouvez demander la suppression de votre compte et de vos données en envoyant un message via l'interface admin.</li>
+            </ul>
+        </section>
+
+        <section class="privacy-card">
+            <div class="icon-box"><i class="fa-solid fa-cookie-bite text-xl"></i></div>
+            <h3>05. Cookies</h3>
+            <p>
+                Nous utilisons des cookies essentiels pour le fonctionnement de la session utilisateur. Ces cookies permettent simplement de vous maintenir connecté à votre compte d'une page à l'autre. Nous n'utilisons pas de cookies publicitaires tiers.
+            </p>
+        </section>
+
+        <div class="text-center mt-20">
+            <p class="text-slate-400 font-bold uppercase text-[10px] tracking-widest mb-4">Une question sur vos données ?</p>
+            <a href="mailto:rgpd@caux-lisperdus.fr" class="text-caux-orange font-black hover:underline italic">rgpd@caux-lisperdus.fr</a>
+        </div>
+
+    </main>
+
+    <footer class="py-12 border-t border-slate-100 text-center">
+        <p class="text-[10px] font-black uppercase tracking-[0.3em] text-slate-400">Caux-lis Perdus - Respect de la vie privée - 2026</p>
+    </footer>
+
+</body>
+</html>

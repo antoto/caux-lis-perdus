@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mentions Légales | Caux-lis Perdus</title>
+    
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: { 
+                        'caux-orange': '#f97316',
+                        'caux-deep': '#020617'
+                    },
+                    fontFamily: {
+                        'main': ['Plus Jakarta Sans', 'sans-serif'],
+                        'serif': ['Fraunces', 'serif']
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;600;700;800&family=Fraunces:ital,opsz,wght@1,9..144,700;1,9..144,900&display=swap');
+        body { font-family: 'Plus Jakarta Sans', sans-serif; background-color: #fafaf9; }
+        .hero-title { font-family: 'Fraunces', serif; letter-spacing: -0.02em; }
+        .legal-card { @apply bg-white p-10 rounded-[2.5rem] border border-slate-100 shadow-sm transition-all hover:shadow-md; }
+        h3 { @apply text-caux-orange font-black uppercase tracking-[0.2em] text-[10px] mb-4; }
+        p, li { @apply text-slate-500 leading-relaxed text-sm font-medium mb-4; }
+    </style>
+</head>
+<body class="antialiased">
+
+    <nav class="w-full py-8 px-6">
+        <div class="max-w-7xl mx-auto flex items-center justify-between">
+            <a href="index.html" class="flex items-center gap-3">
+                <div class="w-12 h-12 bg-white rounded-2xl flex items-center justify-center overflow-hidden shadow-lg shadow-orange-500/10 border border-slate-100">
+                    <img src="logo.png" alt="Logo Caux-lis" class="w-full h-full object-cover">
+                </div>
+                
+                <div>
+                    <span class="text-xl font-black tracking-tighter uppercase block leading-none text-caux-deep">Caux-lis</span>
+                    <span class="text-[9px] font-black uppercase tracking-[0.3em] text-caux-orange">Perdus Normandie</span>
+                </div>
+            </a>
+            <a href="index.html" class="text-[10px] font-black uppercase tracking-widest text-slate-400 hover:text-caux-orange transition">
+                <i class="fa-solid fa-arrow-left mr-2"></i> Retour au site
+            </a>
+        </div>
+    </nav>
+
+    <header class="pt-20 pb-20 px-6 text-center">
+        <div class="max-w-4xl mx-auto">
+            <h1 class="hero-title text-6xl md:text-7xl text-caux-deep mb-6">Cadre <span class="text-caux-orange italic">Légal.</span></h1>
+            <p class="text-lg text-slate-400 font-medium">Transparence, sécurité des données et conformité pour une expérience en toute confiance.</p>
+        </div>
+    </header>
+
+    <main class="max-w-5xl mx-auto px-6 pb-32 space-y-8">
+
+        <section class="legal-card">
+            <h3>1. Édition du site</h3>
+            <p>
+                En vertu de l'article 6 de la loi n° 2004-575 du 21 juin 2004 pour la confiance dans l'économie numérique, il est précisé aux utilisateurs du site internet <strong>caux-lisperdus.fr</strong> l'identité des différents intervenants dans le cadre de sa réalisation et de son suivi :
+            </p>
+            <ul class="list-disc ml-5 space-y-1">
+                <li><strong>Propriétaire :</strong> Caux-lis Perdus Normandie</li>
+                <li><strong>Contact :</strong> contact@caux-lisperdus.fr | 06 00 00 00 00</li>
+                <li><strong>Adresse :</strong> Place de la Mairie, 76490 Caudebec-en-Caux</li>
+                <li><strong>SIRET :</strong> 123 456 789 00000</li>
+            </ul>
+        </section>
+
+        <section class="legal-card">
+            <h3>2. Hébergement</h3>
+            <p>
+                Le Site est hébergé par la société <strong>Firebase / Google Cloud Platform</strong>.<br>
+                Siège social : 1600 Amphitheatre Parkway, Mountain View, CA 94043, USA.<br>
+                Le stockage des données est localisé dans les centres de données de l'Union Européenne (Belgique ou France).
+            </p>
+        </section>
+
+        <section class="legal-card">
+            <h3>3. Propriété intellectuelle</h3>
+            <p>
+                <strong>Caux-lis Perdus</strong> est propriétaire des droits de propriété intellectuelle ou détient les droits d’usage sur tous les éléments accessibles sur le site internet, notamment les textes, images, graphismes, logos, vidéos, architecture et icônes.
+            </p>
+            <p>
+                Toute reproduction, représentation, modification, publication, adaptation de tout ou partie des éléments du site, quel que soit le moyen ou le procédé utilisé, est interdite, sauf autorisation écrite préalable de <strong>Caux-lis Perdus</strong>.
+            </p>
+        </section>
+
+        <section class="legal-card">
+            <h3>4. Gestion des données personnelles (RGPD)</h3>
+            <p>
+                Conformément aux dispositions de la loi 78-17 du 6 janvier 1978 modifiée, l’utilisateur du site dispose d’un droit d’accès, de modification et de suppression des informations collectées. 
+            </p>
+            <p><strong>Données collectées via le compte client :</strong></p>
+            <ul class="list-disc ml-5 space-y-1">
+                <li>Nom et Prénom (pour la personnalisation des réservations).</li>
+                <li>Adresse email (pour la connexion et le support).</li>
+                <li>Historique des réservations.</li>
+            </ul>
+            <p>
+                Ces données sont utilisées exclusivement pour la gestion des commandes et la communication entre le client et l'administration. Elles ne sont jamais cédées à des tiers.
+            </p>
+        </section>
+
+        <section class="legal-card">
+            <h3>5. Liens hypertextes et cookies</h3>
+            <p>
+                Le site contient des liens vers d'autres sites, mais ne peut être tenu responsable du contenu de ces derniers. La navigation sur le site peut provoquer l’installation de cookie(s) sur l’ordinateur de l’utilisateur à des fins de maintien de la session de connexion (Firebase Auth).
+            </p>
+        </section>
+
+        <section class="legal-card">
+            <h3>6. Droit applicable et attribution de juridiction</h3>
+            <p>
+                Tout litige en relation avec l’utilisation du site est soumis au droit français. En dehors des cas où la loi ne le permet pas, il est fait attribution exclusive de juridiction aux tribunaux compétents de <strong>Rouen</strong>.
+            </p>
+        </section>
+
+    </main>
+
+    <footer class="py-12 border-t border-slate-100 text-center">
+        <p class="text-[10px] font-black uppercase tracking-[0.3em] text-slate-400">© 2026 Caux-lis Perdus | Tous droits réservés</p>
+    </footer>
+
+</body>
+</html>

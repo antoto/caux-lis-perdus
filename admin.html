@@ -1,0 +1,581 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin | Caux-lis Perdus Management</title>
+    
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.9.1/chart.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: { 
+                        'adm-orange': '#f97316',
+                        'adm-dark': '#0f172a',
+                        'adm-slate': '#1e293b',
+                        'adm-success': '#10b981'
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800&display=swap');
+        body { font-family: 'Plus Jakarta Sans', sans-serif; background-color: #f1f5f9; }
+        .sidebar-link.active { @apply bg-adm-orange text-white shadow-lg shadow-orange-500/30; }
+        .stat-card { @apply bg-white p-6 rounded-[2rem] border border-slate-100 shadow-sm transition-all hover:shadow-xl; }
+        .pos-btn { @apply h-20 bg-slate-100 rounded-2xl flex flex-col items-center justify-center font-bold text-xs hover:bg-adm-orange hover:text-white transition-all; }
+        
+        /* Transition entre sections */
+        .admin-section { display: none; }
+        .admin-section.active { display: block; animation: fadeIn 0.4s ease-out; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+    </style>
+</head>
+<body class="flex min-h-screen">
+
+    <aside class="w-72 bg-adm-dark text-white p-8 flex flex-col fixed h-full">
+        <div class="flex items-center gap-4 mb-12">
+            <div class="w-12 h-12 bg-white rounded-2xl flex items-center justify-center overflow-hidden shadow-inner border border-slate-700">
+                <img src="logo.png" alt="Caux-lis Logo" class="w-full h-full object-cover">
+            </div>
+            
+            <div>
+                <div class="flex items-center gap-2">
+                    <span class="font-black uppercase tracking-tighter text-white">Caux-lis</span>
+                    <span class="px-2 py-0.5 bg-adm-orange text-[9px] font-black text-white rounded-md uppercase">Admin</span>
+                </div>
+                <p class="text-[9px] font-bold text-slate-500 uppercase tracking-[0.2em] mt-1">Ethan GIERA</p>
+            </div>
+        </div>
+
+        <nav class="space-y-3 flex-grow">
+            <button onclick="showSection('dashboard')" class="sidebar-link active w-full flex items-center gap-4 px-6 py-4 rounded-2xl transition font-bold text-sm">
+                <i class="fa-solid fa-chart-pie"></i> Dashboard
+            </button>
+            <button onclick="showSection('caisse')" class="sidebar-link w-full flex items-center gap-4 px-6 py-4 rounded-2xl transition font-bold text-sm">
+                <i class="fa-solid fa-cash-register"></i> Caisse Stand
+            </button>
+            <button onclick="showSection('commandes')" class="sidebar-link w-full flex items-center gap-4 px-6 py-4 rounded-2xl transition font-bold text-sm">
+                <i class="fa-solid fa-boxes-packing"></i> Réservations Web
+            </button>
+            <button onclick="showSection('clients')" class="sidebar-link w-full flex items-center gap-4 px-6 py-4 rounded-2xl transition font-bold text-sm">
+                <i class="fa-solid fa-users"></i> Fiches Clients
+            </button>
+            <button onclick="showSection('compta')" class="sidebar-link w-full flex items-center gap-4 px-6 py-4 rounded-2xl transition font-bold text-sm">
+                <i class="fa-solid fa-file-invoice-dollar"></i> Comptabilité
+            </button>
+            <button onclick="showSection('messages')" class="sidebar-link w-full flex items-center gap-4 px-6 py-4 rounded-2xl transition font-bold text-sm">
+                <i class="fa-solid fa-envelope"></i> Messages
+            </button>
+        </nav>
+
+        <div class="mt-auto space-y-4">
+            <div class="p-5 bg-adm-slate rounded-2xl">
+                <div class="flex justify-between items-center mb-3">
+                    <span class="text-[10px] font-black uppercase text-slate-400">Boutique Web</span>
+                    <label class="relative inline-flex items-center cursor-pointer">
+                        <input type="checkbox" id="shop-toggle" class="sr-only peer" checked onchange="toggleShopStatus()">
+                        <div class="w-11 h-6 bg-slate-600 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:bg-adm-orange after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:rounded-full after:h-5 after:w-5 after:transition-all"></div>
+                    </label>
+                </div>
+                <p id="shop-status-text" class="text-[10px] font-bold text-adm-success">EN LIGNE (Ouvert)</p>
+            </div>
+            <button class="w-full py-4 bg-red-500/10 text-red-500 rounded-2xl font-black text-xs uppercase hover:bg-red-500 hover:text-white transition">Déconnexion</button>
+        </div>
+    </aside>
+
+    <main class="flex-grow ml-72 p-12">
+        
+        <header class="flex justify-between items-center mb-12">
+            <div>
+                <h1 id="section-title" class="text-4xl font-black text-adm-dark italic uppercase tracking-tighter">Dashboard</h1>
+                <p class="text-slate-400 font-bold">Bienvenue, Gérant de Caux-lis Perdus.</p>
+            </div>
+            <div class="flex gap-4">
+                <div class="bg-white px-6 py-3 rounded-2xl border border-slate-200 flex items-center gap-3">
+                    <span class="text-xs font-black text-slate-400 uppercase tracking-widest">Prix/KG :</span>
+                    <input type="number" id="unit-price" step="0.5" class="w-16 font-black text-adm-orange outline-none" onchange="updateUnitPrice()">
+                </div>
+                <div class="bg-adm-orange text-white px-6 py-3 rounded-2xl font-black text-xs flex items-center gap-2">
+                    <i class="fa-solid fa-calendar"></i> <span id="current-date">--/--/--</span>
+                </div>
+            </div>
+        </header>
+
+        <section id="dashboard" class="admin-section active space-y-8">
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-6">
+                <div class="stat-card">
+                    <p class="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-2">CA du Jour (Live)</p>
+                    <div class="flex items-center justify-between">
+                        <span id="ca-jour" class="text-3xl font-black">0.00 €</span>
+                        <div class="text-adm-success text-xs font-bold">+12%</div>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <p class="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-2">Poids Vendu</p>
+                    <div class="flex items-center justify-between">
+                        <span id="poids-jour" class="text-3xl font-black">0.0 kg</span>
+                        <i class="fa-solid fa-weight-hanging text-slate-200 text-2xl"></i>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <p class="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-2">Ventes Directes</p>
+                    <span id="ventes-count" class="text-3xl font-black text-adm-orange">0</span>
+                </div>
+                <div class="stat-card">
+                    <p class="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-2">Réservations Web</p>
+                    <span id="res-count" class="text-3xl font-black text-blue-500">0</span>
+                </div>
+            </div>
+
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                <div class="bg-white p-8 rounded-[3rem] border border-slate-100 shadow-sm">
+                    <h3 class="font-black uppercase text-sm mb-6 italic tracking-tighter">Performance Hebdomadaire</h3>
+                    <canvas id="mainChart" height="200"></canvas>
+                </div>
+                <div class="bg-white p-8 rounded-[3rem] border border-slate-100 shadow-sm">
+                    <h3 class="font-black uppercase text-sm mb-6 italic tracking-tighter">Dernières Actions</h3>
+                    <div id="log-list" class="space-y-4">
+                        </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="caisse" class="admin-section space-y-8">
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-10">
+                <div class="lg:col-span-2 space-y-6">
+                    <div class="bg-white p-10 rounded-[3rem] shadow-xl border border-slate-100">
+                        <h2 class="font-black uppercase text-xl mb-8 italic">Encaissement Direct</h2>
+                        <div class="grid grid-cols-3 gap-4 mb-8">
+                            <button onclick="posAddWeight(1)" class="pos-btn"><i class="fa-solid fa-plus mb-1"></i> 1 KG</button>
+                            <button onclick="posAddWeight(5)" class="pos-btn"><i class="fa-solid fa-plus mb-1"></i> 5 KG</button>
+                            <button onclick="posAddWeight(10)" class="pos-btn"><i class="fa-solid fa-plus mb-1"></i> 10 KG</button>
+                        </div>
+                        <div class="space-y-4">
+                            <label class="text-[10px] font-black text-slate-400 uppercase ml-4">Saisie Manuelle Poids (kg)</label>
+                            <input type="number" id="pos-input-weight" placeholder="0.00" class="w-full text-6xl font-black p-8 bg-slate-50 rounded-[2rem] border-none outline-none text-center">
+                        </div>
+                    </div>
+                    
+                    <div class="bg-adm-dark p-8 rounded-[3rem] text-white flex justify-between items-center">
+                        <div>
+                            <p class="text-xs font-bold text-slate-400 uppercase">Scanner QR de réservation</p>
+                            <p class="text-[10px] italic text-slate-500">Valider une commande web automatiquement</p>
+                        </div>
+                        <div class="flex gap-3">
+                            <input type="text" id="scan-id" placeholder="ID Commande" class="bg-white/10 p-4 rounded-xl outline-none focus:ring-2 ring-adm-orange font-bold uppercase">
+                            <button onclick="processScan()" class="bg-adm-orange px-8 rounded-xl font-black uppercase text-xs">Valider</button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="space-y-6">
+                    <div class="bg-white p-8 rounded-[3rem] shadow-sm border border-slate-100 sticky top-10">
+                        <h3 class="font-black uppercase text-sm mb-8 italic tracking-tighter">Ticket Actuel</h3>
+                        <div id="pos-ticket" class="space-y-4 mb-10 border-b border-dashed border-slate-200 pb-6 min-h-[150px]">
+                            </div>
+                        <div class="flex justify-between items-center mb-8">
+                            <span class="text-xs font-black uppercase text-slate-400 tracking-widest">Total à payer</span>
+                            <span id="pos-total" class="text-4xl font-black text-adm-orange">0.00 €</span>
+                        </div>
+                        <div class="grid grid-cols-2 gap-4 mb-4">
+                            <button onclick="checkout('ESPECES')" class="bg-slate-800 text-white py-4 rounded-xl font-black text-[10px] uppercase">Espèces</button>
+                            <button onclick="checkout('CB')" class="bg-slate-800 text-white py-4 rounded-xl font-black text-[10px] uppercase">Carte Bancaire</button>
+                        </div>
+                        <button onclick="generateManualInvoice()" class="w-full border-2 border-slate-100 py-4 rounded-xl font-black text-[10px] uppercase hover:bg-slate-50">Imprimer Facture</button>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="commandes" class="admin-section">
+            <div class="bg-white rounded-[3rem] border border-slate-100 overflow-hidden shadow-xl">
+                <div class="p-8 border-b border-slate-100 flex justify-between items-center bg-slate-50">
+                    <h3 class="font-black uppercase italic tracking-tighter">Réservations en attente</h3>
+                    <div class="flex gap-4">
+                        <button class="px-4 py-2 bg-white rounded-lg border border-slate-200 text-xs font-bold">Tout exporter (CSV)</button>
+                    </div>
+                </div>
+                <table class="w-full text-left">
+                    <thead class="bg-slate-50 text-[10px] font-black uppercase text-slate-400">
+                        <tr>
+                            <th class="p-6">Client</th>
+                            <th class="p-6">ID Commande</th>
+                            <th class="p-6">Poids</th>
+                            <th class="p-6">Total</th>
+                            <th class="p-6">Date</th>
+                            <th class="p-6">Status</th>
+                            <th class="p-6 text-right">Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody id="res-table-body" class="divide-y divide-slate-100 font-bold text-sm text-slate-600">
+                        </tbody>
+                </table>
+            </div>
+        </section>
+
+        <section id="compta" class="admin-section space-y-8">
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                <div class="bg-adm-orange p-10 rounded-[3rem] text-white">
+                    <p class="text-xs font-black uppercase opacity-60 tracking-widest mb-4">Total Chiffre d'Affaires</p>
+                    <h4 id="total-ca-ever" class="text-5xl font-black tracking-tighter">0.00 €</h4>
+                </div>
+                <div class="bg-white p-10 rounded-[3rem] border border-slate-100">
+                    <p class="text-xs font-black uppercase text-slate-400 tracking-widest mb-4">TVA Collectée (20%)</p>
+                    <h4 id="total-tva" class="text-3xl font-black">0.00 €</h4>
+                </div>
+                <div class="bg-white p-10 rounded-[3rem] border border-slate-100">
+                    <p class="text-xs font-black uppercase text-slate-400 tracking-widest mb-4">Nombre de Transactions</p>
+                    <h4 id="total-trans" class="text-3xl font-black">0</h4>
+                </div>
+            </div>
+
+            <div class="bg-white p-10 rounded-[3.5rem] border border-slate-100">
+                <h3 class="font-black uppercase italic text-xl mb-10 tracking-tighter">Journal de Caisse Détallé</h3>
+                <table class="w-full text-left">
+                    <thead class="bg-slate-50 text-[10px] font-black uppercase text-slate-400">
+                        <tr>
+                            <th class="p-6">Heure</th>
+                            <th class="p-6">Type</th>
+                            <th class="p-6">Mode</th>
+                            <th class="p-6">Poids</th>
+                            <th class="p-6">Total HT</th>
+                            <th class="p-6">Total TTC</th>
+                        </tr>
+                    </thead>
+                    <tbody id="compta-body" class="divide-y divide-slate-100 text-sm font-bold">
+                        </tbody>
+                </table>
+            </div>
+        </section>
+
+        <section id="clients" class="admin-section">
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6" id="clients-grid">
+                </div>
+        </section>
+
+        <section id="messages" class="admin-section">
+            <div class="grid grid-cols-1 gap-6" id="messages-list">
+                </div>
+        </section>
+
+    </main>
+
+    <div id="invoice-template" class="hidden p-10 bg-white text-black" style="width: 800px;">
+        <div class="flex justify-between items-start mb-10">
+            <div>
+                <h1 class="text-4xl font-black uppercase">FACTURE</h1>
+                <p class="text-sm font-bold text-slate-500" id="inv-num">INV-000</p>
+            </div>
+            <div class="text-right">
+                <p class="font-black uppercase">Caux-lis Perdus</p>
+                <p class="text-xs">Marché de Caudebec-en-Caux</p>
+                <p class="text-xs">SIRET: 123 456 789 00001</p>
+            </div>
+        </div>
+        <table class="w-full mb-10">
+            <thead class="border-b-2 border-black font-black uppercase text-xs">
+                <tr><th class="py-4 text-left">Description</th><th class="py-4 text-right">Poids</th><th class="py-4 text-right">Prix Unitaire</th><th class="py-4 text-right">Total</th></tr>
+            </thead>
+            <tbody class="text-sm">
+                <tr><td class="py-4">Colis Mystères Non-Réclamés</td><td class="py-4 text-right" id="inv-weight">0 kg</td><td class="py-4 text-right" id="inv-up">10.00€</td><td class="py-4 text-right font-black" id="inv-total">0.00€</td></tr>
+            </tbody>
+        </table>
+        <div class="flex justify-end">
+            <div class="w-64 space-y-2 text-sm border-t-2 border-black pt-4">
+                <div class="flex justify-between"><span>Total HT :</span><span id="inv-ht">0.00€</span></div>
+                <div class="flex justify-between"><span>TVA (20%) :</span><span id="inv-tva">0.00€</span></div>
+                <div class="flex justify-between text-xl font-black"><span>TOTAL TTC :</span><span id="inv-final">0.00€</span></div>
+            </div>
+        </div>
+    </div>
+
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+        import { getDatabase, ref, onValue, set, update, push, remove } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js";
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyCsXy7k8bVdQowzIeSWL5c-kUMfCJgyVyA",
+            authDomain: "caux-lis-perdus.firebaseapp.com",
+            databaseURL: "https://caux-lis-perdus-default-rtdb.firebaseio.com",
+            projectId: "caux-lis-perdus",
+            storageBucket: "caux-lis-perdus.firebasestorage.app",
+            messagingSenderId: "687946100062",
+            appId: "1:687946100062:web:6c6d864bcd88d77a6733cf"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const db = getDatabase(app);
+
+        let unitPrice = 10;
+        let reservations = {};
+        let sales = {};
+        let currentPosWeight = 0;
+
+        // INIT
+        window.onload = () => {
+            document.getElementById('current-date').innerText = new Date().toLocaleDateString('fr-FR');
+            initCharts();
+            syncData();
+        };
+
+        // NAV
+        window.showSection = (id) => {
+            document.querySelectorAll('.admin-section').forEach(s => s.classList.remove('active'));
+            document.getElementById(id).classList.add('active');
+            document.getElementById('section-title').innerText = id;
+            document.querySelectorAll('.sidebar-link').forEach(l => l.classList.remove('active'));
+            event.currentTarget.classList.add('active');
+        };
+
+        // SYNC FIREBASE
+        function syncData() {
+            // Reglages
+            onValue(ref(db, 'reglages'), (snap) => {
+                const data = snap.val() || {};
+                unitPrice = data.prixUnitaire || 10;
+                document.getElementById('unit-price').value = unitPrice;
+                document.getElementById('shop-toggle').checked = data.boutiqueOuverte !== false;
+                document.getElementById('shop-status-text').innerText = data.boutiqueOuverte !== false ? "EN LIGNE (Ouvert)" : "OFFLINE (Fermé)";
+                document.getElementById('shop-status-text').className = data.boutiqueOuverte !== false ? "text-[10px] font-bold text-adm-success" : "text-[10px] font-bold text-red-500";
+            });
+
+            // Reservations
+            onValue(ref(db, 'reservations'), (snap) => {
+                reservations = snap.val() || {};
+                renderReservations();
+                updateStats();
+            });
+
+            // Ventes (Ventes directes + validées)
+            onValue(ref(db, 'ventes'), (snap) => {
+                sales = snap.val() || {};
+                renderCompta();
+                updateStats();
+            });
+
+            // Messages
+            onValue(ref(db, 'messages'), (snap) => {
+                const messages = snap.val() || {};
+                renderMessages(messages);
+            });
+
+            // Clients
+            onValue(ref(db, 'users'), (snap) => {
+                const clients = snap.val() || {};
+                renderClients(clients);
+            });
+        }
+
+        // ACTIONS REGLAGES
+        window.updateUnitPrice = () => {
+            const val = parseFloat(document.getElementById('unit-price').value);
+            update(ref(db, 'reglages'), { prixUnitaire: val });
+        };
+
+        window.toggleShopStatus = () => {
+            const checked = document.getElementById('shop-toggle').checked;
+            update(ref(db, 'reglages'), { boutiqueOuverte: checked });
+        };
+
+        // CAISSE POS
+        window.posAddWeight = (val) => {
+            currentPosWeight += val;
+            updatePosUI();
+        };
+
+        function updatePosUI() {
+            document.getElementById('pos-input-weight').value = currentPosWeight.toFixed(2);
+            document.getElementById('pos-ticket').innerHTML = `
+                <div class="flex justify-between items-center font-bold">
+                    <span>Lot Colis Mystère</span>
+                    <span>${currentPosWeight.toFixed(2)} KG</span>
+                </div>
+                <div class="text-[10px] text-slate-400 uppercase tracking-widest">${unitPrice}€ / kg</div>
+            `;
+            document.getElementById('pos-total').innerText = (currentPosWeight * unitPrice).toFixed(2) + " €";
+        }
+
+        window.checkout = async (mode) => {
+            if(currentPosWeight <= 0) return alert("Poids nul !");
+            
+            const saleData = {
+                type: 'DIRECT',
+                poids: currentPosWeight,
+                total: currentPosWeight * unitPrice,
+                mode: mode,
+                timestamp: Date.now()
+            };
+
+            await push(ref(db, 'ventes'), saleData);
+            alert("Vente enregistrée avec succès !");
+            currentPosWeight = 0;
+            updatePosUI();
+        };
+
+        window.processScan = async () => {
+            const id = document.getElementById('scan-id').value.toUpperCase();
+            if(!reservations[id]) return alert("ID inconnu !");
+
+            const res = reservations[id];
+            const saleData = {
+                type: 'WEB_VALIDATED',
+                resId: id,
+                userName: res.userName,
+                poids: res.poidsTotal,
+                total: res.prixTotal,
+                mode: 'WEB_RESERVE',
+                timestamp: Date.now()
+            };
+
+            await push(ref(db, 'ventes'), saleData);
+            await remove(ref(db, `reservations/${id}`));
+            alert("Réservation web encaissée !");
+            document.getElementById('scan-id').value = "";
+        };
+
+        // RENDERING
+        function renderReservations() {
+            const tbody = document.getElementById('res-table-body');
+            tbody.innerHTML = Object.values(reservations).map(res => `
+                <tr class="hover:bg-slate-50 transition">
+                    <td class="p-6">${res.userName}</td>
+                    <td class="p-6 text-adm-orange font-black">#${res.orderId}</td>
+                    <td class="p-6">${res.poidsTotal} kg</td>
+                    <td class="p-6">${res.prixTotal.toFixed(2)}€</td>
+                    <td class="p-6 text-[10px]">${new Date(res.timestamp).toLocaleTimeString()}</td>
+                    <td class="p-6"><span class="px-3 py-1 bg-blue-100 text-blue-600 rounded-full text-[10px]">ATTENTE</span></td>
+                    <td class="p-6 text-right">
+                        <button onclick="deleteRes('${res.orderId}')" class="text-red-400 hover:text-red-600 px-4"><i class="fa-solid fa-trash"></i></button>
+                    </td>
+                </tr>
+            `).join('');
+        }
+
+        function renderCompta() {
+            const tbody = document.getElementById('compta-body');
+            let totalEver = 0;
+            let totalKg = 0;
+
+            const rows = Object.values(sales).sort((a,b) => b.timestamp - a.timestamp).map(sale => {
+                totalEver += sale.total;
+                totalKg += sale.poids;
+                return `
+                    <tr>
+                        <td class="p-6 text-slate-400">${new Date(sale.timestamp).toLocaleTimeString()}</td>
+                        <td class="p-6"><span class="text-[10px] font-black">${sale.type}</span></td>
+                        <td class="p-6">${sale.mode}</td>
+                        <td class="p-6">${sale.poids} kg</td>
+                        <td class="p-6">${(sale.total / 1.2).toFixed(2)}€</td>
+                        <td class="p-6 font-black">${sale.total.toFixed(2)}€</td>
+                    </tr>
+                `;
+            }).join('');
+
+            tbody.innerHTML = rows;
+            document.getElementById('total-ca-ever').innerText = totalEver.toFixed(2) + " €";
+            document.getElementById('ca-jour').innerText = totalEver.toFixed(2) + " €"; // Simulé pour demo
+            document.getElementById('poids-jour').innerText = totalKg.toFixed(1) + " kg";
+            document.getElementById('total-tva').innerText = (totalEver * 0.2).toFixed(2) + " €";
+            document.getElementById('total-trans').innerText = Object.keys(sales).length;
+        }
+
+        function renderMessages(messages) {
+            const container = document.getElementById('messages-list');
+            container.innerHTML = Object.entries(messages).map(([id, msg]) => `
+                <div class="bg-white p-8 rounded-3xl shadow-sm flex justify-between items-center ${msg.read ? 'opacity-50' : 'border-l-4 border-adm-orange'}">
+                    <div>
+                        <h4 class="font-black uppercase text-adm-dark">${msg.sender} <span class="text-[10px] font-bold text-slate-400 ml-2 italic">(${msg.senderEmail})</span></h4>
+                        <p class="text-slate-600 mt-2">${msg.message}</p>
+                    </div>
+                    <div class="flex gap-4">
+                        <button onclick="markRead('${id}')" class="w-10 h-10 rounded-xl bg-slate-100 flex items-center justify-center hover:bg-adm-orange hover:text-white transition"><i class="fa-solid fa-check"></i></button>
+                        <button onclick="deleteMsg('${id}')" class="w-10 h-10 rounded-xl bg-red-100 text-red-500 flex items-center justify-center hover:bg-red-500 hover:text-white transition"><i class="fa-solid fa-trash"></i></button>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function renderClients(clients) {
+            const grid = document.getElementById('clients-grid');
+            grid.innerHTML = Object.values(clients).map(c => `
+                <div class="bg-white p-8 rounded-[2.5rem] border border-slate-100 shadow-sm">
+                    <div class="flex items-center gap-4 mb-6">
+                        <div class="w-14 h-14 bg-slate-100 rounded-2xl flex items-center justify-center font-black text-xl">${c.prenom[0]}</div>
+                        <div>
+                            <h4 class="font-black uppercase text-sm">${c.prenom} ${c.nom}</h4>
+                            <p class="text-[10px] text-slate-400 italic">${c.email}</p>
+                        </div>
+                    </div>
+                    <div class="grid grid-cols-2 gap-4">
+                        <div class="p-4 bg-slate-50 rounded-2xl">
+                            <p class="text-[9px] font-black uppercase text-slate-400 mb-1">Total Fidélité</p>
+                            <p class="font-black text-adm-orange">-- kg</p>
+                        </div>
+                        <div class="p-4 bg-slate-50 rounded-2xl text-right">
+                            <p class="text-[9px] font-black uppercase text-slate-400 mb-1">Dernier passage</p>
+                            <p class="font-bold text-xs">Aujourd'hui</p>
+                        </div>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        // FACTURATION PDF
+        window.generateManualInvoice = () => {
+            const id = "FAC-" + Date.now().toString().substr(-5);
+            document.getElementById('inv-num').innerText = id;
+            document.getElementById('inv-weight').innerText = currentPosWeight + " kg";
+            document.getElementById('inv-up').innerText = unitPrice.toFixed(2) + "€";
+            document.getElementById('inv-total').innerText = (currentPosWeight * unitPrice).toFixed(2) + "€";
+            document.getElementById('inv-ht').innerText = ((currentPosWeight * unitPrice)/1.2).toFixed(2) + "€";
+            document.getElementById('inv-tva').innerText = ((currentPosWeight * unitPrice)*0.2).toFixed(2) + "€";
+            document.getElementById('inv-final').innerText = (currentPosWeight * unitPrice).toFixed(2) + "€";
+
+            const element = document.getElementById('invoice-template');
+            element.classList.remove('hidden');
+            html2pdf().from(element).save(`${id}.pdf`).then(() => element.classList.add('hidden'));
+        };
+
+        // UTILS
+        window.deleteRes = (id) => confirm("Supprimer cette réservation ?") && remove(ref(db, `reservations/${id}`));
+        window.markRead = (id) => update(ref(db, `messages/${id}`), { read: true });
+        window.deleteMsg = (id) => remove(ref(db, `messages/${id}`));
+
+        function updateStats() {
+            document.getElementById('res-count').innerText = Object.keys(reservations).length;
+            document.getElementById('ventes-count').innerText = Object.keys(sales).length;
+        }
+
+        function initCharts() {
+            const ctx = document.getElementById('mainChart').getContext('2d');
+            new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: ['Sam 01', 'Sam 08', 'Sam 15', 'Sam 22', 'Aujourd\'hui'],
+                    datasets: [{
+                        label: 'CA Hebdomadaire (€)',
+                        data: [450, 890, 720, 1100, 1400],
+                        borderColor: '#f97316',
+                        borderWidth: 4,
+                        tension: 0.4,
+                        fill: true,
+                        backgroundColor: 'rgba(249, 115, 22, 0.1)'
+                    }]
+                },
+                options: {
+                    plugins: { legend: { display: false } },
+                    scales: { y: { beginAtZero: true }, x: { grid: { display: false } } }
+                }
+            });
+        }
+    </script>
+</body>
+</html>

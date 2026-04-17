@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CGV / CGU | Caux-lis Perdus</title>
+    
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: { 
+                        'caux-orange': '#f97316',
+                        'caux-deep': '#020617'
+                    },
+                    fontFamily: {
+                        'main': ['Plus Jakarta Sans', 'sans-serif'],
+                        'serif': ['Fraunces', 'serif']
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;600;700;800&family=Fraunces:ital,opsz,wght@1,9..144,700;1,9..144,900&display=swap');
+        body { font-family: 'Plus Jakarta Sans', sans-serif; background-color: #fafaf9; }
+        .hero-title { font-family: 'Fraunces', serif; letter-spacing: -0.02em; }
+        .legal-card { @apply bg-white p-10 rounded-[2.5rem] border border-slate-100 shadow-sm mb-8; }
+        h3 { @apply text-caux-orange font-black uppercase tracking-[0.2em] text-[10px] mb-4; }
+        h4 { @apply text-caux-deep font-extrabold text-lg mb-4 italic; }
+        p, li { @apply text-slate-500 leading-relaxed text-sm font-medium mb-4; }
+        .accent-box { @apply p-6 bg-orange-50 rounded-2xl border-l-4 border-caux-orange mb-6; }
+    </style>
+</head>
+<body class="antialiased">
+
+    <nav class="w-full py-8 px-6">
+        <div class="max-w-7xl mx-auto flex items-center justify-between">
+            <a href="index.html" class="flex items-center gap-3">
+                <div class="w-12 h-12 bg-white rounded-2xl flex items-center justify-center overflow-hidden shadow-lg shadow-orange-500/10 border border-slate-100">
+                    <img src="logo.png" alt="Logo Caux-lis" class="w-full h-full object-cover">
+                </div>
+                
+                <div>
+                    <span class="text-xl font-black tracking-tighter uppercase block leading-none text-caux-deep">Caux-lis</span>
+                    <span class="text-[9px] font-black uppercase tracking-[0.3em] text-caux-orange">Perdus Normandie</span>
+                </div>
+            </a>
+            <a href="index.html" class="text-[10px] font-black uppercase tracking-widest text-slate-400 hover:text-caux-orange transition">
+                <i class="fa-solid fa-arrow-left mr-2"></i> Retour
+            </a>
+        </div>
+    </nav>
+
+    <header class="pt-16 pb-16 px-6 text-center">
+        <div class="max-w-4xl mx-auto">
+            <h1 class="hero-title text-6xl text-caux-deep mb-4">CGV <span class="text-caux-orange">&</span> CGU</h1>
+            <p class="text-slate-400 font-bold uppercase text-[10px] tracking-[0.3em]">Dernière mise à jour : Avril 2026</p>
+        </div>
+    </header>
+
+    <main class="max-w-5xl mx-auto px-6 pb-32">
+
+        <section class="legal-card">
+            <h3>01. Objet du Service</h3>
+            <p>
+                Les présentes Conditions Générales ont pour objet de définir les modalités de vente et d'utilisation du site <strong>Caux-lis Perdus</strong>. 
+                Le site propose un service de réservation de "colis perdus" (colis non réclamés, NPAI) vendus au poids.
+            </p>
+            <div class="accent-box">
+                <p class="text-caux-deep font-bold mb-0 italic">
+                    <i class="fa-solid fa-triangle-exclamation mr-2"></i> Important : Par nature, le contenu des colis est totalement inconnu du vendeur comme de l'acheteur au moment de la transaction.
+                </p>
+            </div>
+        </section>
+
+        <section class="legal-card">
+            <h3>02. Réservation et Tarifs</h3>
+            <h4>Processus de réservation</h4>
+            <p>
+                L'utilisateur sélectionne le poids souhaité sur le site. La validation de la réservation entraîne la génération d'un QR Code unique. Cette réservation ne constitue pas une vente ferme tant que le paiement n'a pas été effectué sur le lieu de retrait.
+            </p>
+            <h4>Prix</h4>
+            <p>
+                Le prix est fixé au kilo (indiqué sur le site). Le montant total affiché lors de la réservation est une <strong>estimation</strong>. Le poids réel sera vérifié sur place avec une balance homologuée, ce qui pourra ajuster légèrement le prix final.
+            </p>
+        </section>
+
+        <section class="legal-card">
+            <h3>03. Retrait et Modalités de Paiement</h3>
+            <p>
+                Le retrait des commandes s'effectue exclusivement sur le stand <strong>Caux-lis Perdus</strong> au marché de Caudebec-en-Caux le samedi matin (8h00 - 12h30).
+            </p>
+            <ul class="list-disc ml-5 space-y-2">
+                <li>Le client doit présenter son QR Code ou son ID de réservation.</li>
+                <li>Le paiement s'effectue sur place en <strong>Espèces</strong> ou <strong>Carte Bancaire</strong>.</li>
+                <li>Toute commande non retirée avant 11h00 le jour prévu pourra être remise en vente libre.</li>
+            </ul>
+        </section>
+
+        <section class="legal-card">
+            <h3>04. Droit de Rétractation et Retours</h3>
+            <div class="accent-box bg-red-50 border-red-500">
+                <h4 class="text-red-700">Clause de non-retour</h4>
+                <p class="text-red-700 mb-0">
+                    Conformément à l'article L221-28 du Code de la consommation, le droit de rétractation ne peut être exercé pour les contrats de fourniture de biens dont le contenu est aléatoire. 
+                    <strong>Une fois le colis ouvert ou emporté, aucun remboursement ou échange ne sera accepté, quel que soit le contenu découvert.</strong>
+                </p>
+            </div>
+            <p>
+                Les produits sont vendus "en l'état". L'acheteur accepte le risque de recevoir des produits de valeur inférieure au prix d'achat, tout comme il bénéficie de l'opportunité de recevoir des produits de valeur supérieure.
+            </p>
+        </section>
+
+        <section class="legal-card">
+            <h3>05. CGU - Utilisation du Compte</h3>
+            <p>
+                L'utilisateur s'engage à fournir des informations exactes (Nom, Prénom, Email). Le compte est personnel. 
+                L'administration se réserve le droit de suspendre un compte en cas d'abus (réservations multiples jamais retirées, comportements frauduleux).
+            </p>
+            <h4>Responsabilité</h4>
+            <p>
+                <strong>Caux-lis Perdus</strong> ne peut être tenu responsable des dommages causés par le contenu d'un colis (produit défectueux, allergie, dangerosité d'un objet). Les colis sont revendus tels qu'ils ont été collectés dans les centres de tri.
+            </p>
+        </section>
+
+        <section class="legal-card">
+            <h3>06. Données Personnelles</h3>
+            <p>
+                Les informations collectées sont nécessaires à la gestion des réservations. Conformément au RGPD, vous disposez d'un droit d'accès et de suppression de vos données en nous contactant via l'interface de messagerie de votre compte.
+            </p>
+        </section>
+
+        <section class="legal-card">
+            <h3>07. Litiges</h3>
+            <p>
+                En cas de contestation, les parties s'engagent à rechercher une solution amiable avant toute action judiciaire. À défaut, les tribunaux de <strong>Rouen</strong> seront seuls compétents.
+            </p>
+        </section>
+
+    </main>
+
+    <footer class="py-12 border-t border-slate-100 text-center">
+        <p class="text-[10px] font-black uppercase tracking-[0.3em] text-slate-400">Caux-lis Perdus Normandie - 2026</p>
+    </footer>
+
+</body>
+</html>

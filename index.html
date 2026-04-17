@@ -1,0 +1,580 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Caux-lis Perdus | Plateforme Officielle Normandie</title>
+    
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: { 
+                        'caux-orange': '#f97316',
+                        'caux-deep': '#020617',
+                        'caux-gold': '#fbbf24',
+                        'caux-bg': '#fafaf9'
+                    },
+                    fontFamily: {
+                        'main': ['Plus Jakarta Sans', 'sans-serif'],
+                        'serif': ['Fraunces', 'serif']
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;600;700;800&family=Fraunces:ital,opsz,wght@1,9..144,700;1,9..144,900&display=swap');
+        
+        body { font-family: 'Plus Jakarta Sans', sans-serif; background-color: #fafaf9; scroll-behavior: smooth; }
+        
+        .glass-nav { background: rgba(255, 255, 255, 0.8); backdrop-filter: blur(20px); border-bottom: 1px solid rgba(0,0,0,0.05); }
+        
+        .hero-title { font-family: 'Fraunces', serif; letter-spacing: -0.04em; }
+        
+        .btn-primary { @apply px-8 py-4 bg-caux-orange text-white rounded-2xl font-black uppercase tracking-widest text-[11px] transition-all hover:scale-105 hover:shadow-2xl hover:shadow-orange-500/30 active:scale-95 flex items-center justify-center gap-3; }
+        .btn-secondary { @apply px-8 py-4 bg-caux-deep text-white rounded-2xl font-black uppercase tracking-widest text-[11px] transition-all hover:bg-slate-800; }
+
+        .input-caux { @apply w-full p-5 bg-white border border-slate-200 rounded-2xl outline-none focus:ring-4 focus:ring-orange-500/10 focus:border-caux-orange transition-all font-semibold text-slate-700; }
+
+        .card-reveal { transition: transform 0.6s cubic-bezier(0.22, 1, 0.36, 1), opacity 0.6s; }
+        
+        .floating { animation: float 6s ease-in-out infinite; }
+        @keyframes float { 0% { transform: translateY(0px); } 50% { transform: translateY(-20px); } 100% { transform: translateY(0px); } }
+        
+        ::-webkit-scrollbar { width: 6px; }
+        ::-webkit-scrollbar-thumb { background: #ea580c; border-radius: 10px; }
+    </style>
+</head>
+<body class="overflow-x-hidden">
+
+    <nav class="fixed w-full z-[100] glass-nav py-5 px-6">
+        <div class="max-w-7xl mx-auto flex items-center justify-between">
+            <a href="#accueil" class="flex items-center gap-3">
+                <div class="w-12 h-12 bg-white rounded-2xl flex items-center justify-center overflow-hidden shadow-lg shadow-orange-500/10 border border-slate-100">
+                    <img src="logo.png" alt="Logo Caux-lis" class="w-full h-full object-cover">
+                </div>
+                
+                <div>
+                    <span class="text-xl font-black tracking-tighter uppercase block leading-none text-caux-deep">Caux-lis</span>
+                    <span class="text-[9px] font-black uppercase tracking-[0.3em] text-caux-orange">Perdus Normandie</span>
+                </div>
+            </a>
+
+            <div class="hidden lg:flex items-center gap-10 font-extrabold text-[11px] uppercase tracking-widest">
+                <a href="#accueil" class="hover:text-caux-orange transition">Accueil</a>
+                <a href="#concept" class="hover:text-caux-orange transition">Concept</a>
+                <a href="#boutique" class="hover:text-caux-orange transition">Commander</a>
+                <a href="#contact" class="hover:text-caux-orange transition">Support</a>
+            </div>
+
+            <div class="flex items-center gap-4">
+                <button onclick="toggleAuth()" id="nav-auth-btn" class="btn-secondary py-3 px-6">
+                    <i class="fa-solid fa-user-circle text-lg"></i> <span class="hidden sm:inline">Mon Compte</span>
+                </button>
+                <div id="nav-user-info" class="hidden flex items-center gap-3">
+                    <div class="text-right hidden sm:block">
+                        <p class="text-[10px] font-black text-slate-400 uppercase leading-none mb-1">Bienvenue</p>
+                        <p id="nav-user-name" class="text-xs font-black text-caux-deep uppercase">Client</p>
+                    </div>
+                    <button onclick="toggleSidebar()" class="w-12 h-12 rounded-2xl bg-caux-orange text-white shadow-lg"><i class="fa-solid fa-bars-staggered"></i></button>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <section id="accueil" class="relative pt-48 pb-32 px-6 overflow-hidden min-h-screen flex items-center">
+        <div class="absolute top-[-10%] right-[-10%] w-[600px] h-[600px] bg-orange-200/40 rounded-full blur-[120px] -z-10"></div>
+        <div class="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-2 gap-20">
+            <div class="space-y-10">
+                <div class="inline-flex items-center gap-2 px-4 py-2 bg-white border border-slate-100 rounded-full shadow-sm">
+                    <span class="flex h-2 w-2 bg-orange-500 rounded-full animate-ping"></span>
+                    <span class="text-[10px] font-black uppercase tracking-widest">Arrivage Samedi : 850kg attendus</span>
+                </div>
+                <h1 class="hero-title text-7xl md:text-9xl text-caux-deep leading-none">
+                    Le frisson de <br> <span class="text-caux-orange italic">l'inconnu.</span>
+                </h1>
+                <p class="text-lg text-slate-500 max-w-lg leading-relaxed font-medium">
+                    Ne laissez plus les colis perdus prendre la poussière. Rachetez-les au poids, déballez-les, et découvrez des trésors cachés. <br>
+                    <span class="text-caux-deep font-bold italic">Un concept unique sur le marché de Caudebec.</span>
+                </p>
+                <div class="flex flex-col sm:row gap-5 pt-4">
+                    <a href="#boutique" class="btn-primary">Tenter l'expérience <i class="fa-solid fa-arrow-right"></i></a>
+                    <a href="#concept" class="px-8 py-4 border-2 border-slate-200 rounded-2xl font-black uppercase tracking-widest text-[11px] text-center hover:bg-white transition">D'où viennent-ils ?</a>
+                </div>
+            </div>
+            <div class="relative flex items-center justify-center">
+                <div class="floating w-full max-w-lg aspect-square bg-white rounded-[4rem] shadow-2xl p-10 rotate-3 border border-slate-100 relative overflow-hidden">
+                    <img src="logo.png" class="w-full h-full object-cover rounded-[3rem] opacity-90">
+                    <div class="absolute bottom-8 left-8 right-8 glass-nav p-6 rounded-3xl border border-white/50 shadow-xl">
+                        <div class="flex justify-between items-center">
+                            <span class="text-xs font-black uppercase text-slate-400">Tarif Unique Stand</span>
+                            <span class="text-3xl font-[900] text-caux-orange" id="display-price">10€/KG</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="concept" class="py-40 bg-caux-deep text-white rounded-[5rem] mx-6">
+        <div class="max-w-7xl mx-auto px-10">
+            <div class="text-center space-y-6 mb-32">
+                <h2 class="text-caux-orange font-black uppercase tracking-[0.5em] text-xs italic">Notre Histoire</h2>
+                <h3 class="hero-title text-5xl md:text-7xl">Du centre de tri <br> à votre salon.</h3>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-16">
+                <div class="space-y-8 p-10 bg-slate-800/40 rounded-[3rem] border border-slate-700">
+                    <div class="w-16 h-16 bg-caux-orange/20 rounded-2xl flex items-center justify-center text-caux-orange text-3xl"><i class="fa-solid fa-plane-slash"></i></div>
+                    <h4 class="text-2xl font-black italic uppercase">1. L'Escale Perdue</h4>
+                    <p class="text-slate-400 leading-relaxed font-medium">Chaque jour, des milliers de colis sont égarés suite à des erreurs d'étiquetage ou des adresses incomplètes. Ils finissent par saturer les entrepôts mondiaux.</p>
+                </div>
+                <div class="space-y-8 p-10 bg-slate-800/40 rounded-[3rem] border border-slate-700">
+                    <div class="w-16 h-16 bg-caux-orange/20 rounded-2xl flex items-center justify-center text-caux-orange text-3xl"><i class="fa-solid fa-recycle"></i></div>
+                    <h4 class="text-2xl font-black italic uppercase">2. Le Sauvetage</h4>
+                    <p class="text-slate-400 leading-relaxed font-medium">Au lieu de les incinérer, nous rachetons ces lots par tonnes. Notre mission est de redonner une utilité à ces objets orphelins dans une démarche circulaire.</p>
+                </div>
+                <div class="space-y-8 p-10 bg-slate-800/40 rounded-[3rem] border border-slate-700">
+                    <div class="w-16 h-16 bg-caux-orange/20 rounded-2xl flex items-center justify-center text-caux-orange text-3xl"><i class="fa-solid fa-gift"></i></div>
+                    <h4 class="text-2xl font-black italic uppercase">3. La Surprise</h4>
+                    <p class="text-slate-400 leading-relaxed font-medium">Rien n'est ouvert avant la vente. Vous achetez une boîte mystère géante au poids. Électronique, mode, ou décoration... l'adrénaline est garantie.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="boutique" class="py-40 px-6">
+        <div class="max-w-6xl mx-auto">
+            <div class="grid grid-cols-1 lg:grid-cols-5 bg-white rounded-[4rem] shadow-2xl shadow-orange-900/10 border border-slate-100 overflow-hidden">
+                <div class="lg:col-span-2 bg-caux-orange p-16 text-white flex flex-col justify-between relative overflow-hidden">
+                    <div class="relative z-10">
+                        <h3 class="hero-title text-5xl leading-none mb-8">Réservez votre <br> lot.</h3>
+                        <p class="font-bold opacity-80 leading-relaxed">Soyez sûr d'avoir vos kilos de bonheur ! Réservez en ligne et venez retirer votre commande au stand le samedi matin.</p>
+                    </div>
+                    <div class="space-y-6 relative z-10">
+                        <div class="flex items-center gap-4 bg-white/10 p-4 rounded-2xl backdrop-blur-md">
+                            <i class="fa-solid fa-clock text-2xl"></i>
+                            <span class="text-[10px] font-black uppercase tracking-widest">Retrait Samedi : 8h00 - 12h30</span>
+                        </div>
+                        <div class="flex items-center gap-4 bg-white/10 p-4 rounded-2xl backdrop-blur-md">
+                            <i class="fa-solid fa-location-arrow text-2xl"></i>
+                            <span class="text-[10px] font-black uppercase tracking-widest">Place de la Mairie, Caudebec</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="lg:col-span-3 p-16 space-y-12">
+                    <div id="shop-closed-alert" class="hidden p-6 bg-red-50 text-red-600 rounded-3xl border border-red-100 text-center font-black uppercase text-xs tracking-widest">
+                        <i class="fa-solid fa-lock mr-2"></i> Les réservations en ligne sont suspendues.
+                    </div>
+
+                    <div class="space-y-8">
+                        <div>
+                            <label class="text-[10px] font-black uppercase text-slate-400 ml-4 mb-3 block tracking-[0.2em]">Quantité de colis (KG)</label>
+                            <div class="flex items-center gap-4">
+                                <button onclick="changeQty(-1)" class="w-16 h-16 rounded-2xl bg-slate-50 border border-slate-200 text-2xl font-black hover:bg-caux-orange hover:text-white transition shadow-sm">-</button>
+                                <input type="number" id="order-qty" value="1" min="1" class="flex-grow text-center text-4xl font-black outline-none text-caux-deep">
+                                <button onclick="changeQty(1)" class="w-16 h-16 rounded-2xl bg-slate-50 border border-slate-200 text-2xl font-black hover:bg-caux-orange hover:text-white transition shadow-sm">+</button>
+                            </div>
+                        </div>
+
+                        <div class="p-8 bg-slate-900 rounded-[2.5rem] flex items-center justify-between text-white shadow-xl shadow-slate-900/20">
+                            <span class="text-xs font-black uppercase tracking-widest text-slate-500">Total Estimation</span>
+                            <span class="text-4xl font-black text-caux-orange"><span id="total-val">10.00</span> €</span>
+                        </div>
+
+                        <div id="order-auth-warning" class="p-6 bg-orange-50 rounded-2xl border border-orange-100 text-center">
+                            <p class="text-xs font-bold text-slate-600 mb-3">Connectez-vous pour finaliser la réservation en 1 clic.</p>
+                            <button onclick="toggleAuth()" class="text-[10px] font-black uppercase text-caux-orange tracking-widest">Se connecter / S'inscrire</button>
+                        </div>
+
+                        <button onclick="sendReservation()" id="btn-submit-order" class="hidden w-full btn-primary py-6 text-sm">Confirmer ma réservation</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="contact" class="py-40 px-6 bg-slate-50">
+        <div class="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-2 gap-24">
+            <div class="space-y-12">
+                <h2 class="hero-title text-6xl">Besoin d'aide ? <br> Écrivez-nous.</h2>
+                <div class="space-y-8">
+                    <div class="flex items-start gap-6">
+                        <div class="w-14 h-14 bg-white rounded-2xl shadow-sm flex items-center justify-center text-caux-orange text-2xl"><i class="fa-solid fa-envelope-open-text"></i></div>
+                        <div>
+                            <h4 class="font-black text-caux-deep uppercase text-sm mb-1 tracking-widest">Support Email</h4>
+                            <p class="text-slate-500 font-bold">contact@caux-lisperdus.fr</p>
+                        </div>
+                    </div>
+                    <div class="flex items-start gap-6">
+                        <div class="w-14 h-14 bg-white rounded-2xl shadow-sm flex items-center justify-center text-caux-orange text-2xl"><i class="fa-solid fa-headset"></i></div>
+                        <div>
+                            <h4 class="font-black text-caux-deep uppercase text-sm mb-1 tracking-widest">Assistance Stand</h4>
+                            <p class="text-slate-500 font-bold">06.00.00.00.00 (Uniquement le samedi)</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="flex gap-4">
+                    <a href="#" class="w-14 h-14 bg-caux-deep text-white rounded-2xl flex items-center justify-center text-xl hover:bg-caux-orange transition-all"><i class="fa-brands fa-instagram"></i></a>
+                    <a href="#" class="w-14 h-14 bg-caux-deep text-white rounded-2xl flex items-center justify-center text-xl hover:bg-caux-orange transition-all"><i class="fa-brands fa-facebook-f"></i></a>
+                </div>
+            </div>
+
+            <div class="glass-nav p-12 rounded-[3.5rem] shadow-xl border border-white">
+                <div id="msg-auth-check" class="space-y-6">
+                    <p class="text-center text-slate-400 font-medium">Veuillez vous connecter pour envoyer un message à l'administration.</p>
+                    <button onclick="toggleAuth()" class="w-full btn-secondary">Connexion requise</button>
+                </div>
+                
+                <div id="msg-form" class="hidden space-y-6">
+                    <div class="p-4 bg-orange-100/50 rounded-2xl border border-orange-200">
+                        <p class="text-[10px] font-black uppercase text-caux-orange">Expéditeur : <span id="msg-sender-name">---</span></p>
+                    </div>
+                    <textarea id="msg-content" rows="6" placeholder="Votre question sur un arrivage ou une commande..." class="input-caux"></textarea>
+                    <button onclick="sendMessage()" class="w-full btn-primary py-5">Envoyer le message <i class="fa-solid fa-paper-plane"></i></button>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <footer class="bg-caux-deep pt-32 pb-16 px-6 text-white rounded-[5rem] mx-6 mb-6">
+        <div class="max-w-7xl mx-auto">
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-20 mb-20">
+                
+                <div class="col-span-1 space-y-8">
+                    <div class="flex items-center gap-4">
+                        <div class="w-12 h-12 bg-white rounded-2xl flex items-center justify-center overflow-hidden shadow-lg">
+                            <img src="logo.png" alt="Logo Caux-lis" class="w-full h-full object-cover">
+                        </div>
+                        <div>
+                            <span class="text-2xl font-black uppercase tracking-tighter block leading-none italic">Caux-lis</span>
+                            <span class="text-[9px] font-black uppercase tracking-[0.3em] text-caux-orange">Normandie</span>
+                        </div>
+                    </div>
+                    <p class="text-slate-500 text-sm leading-relaxed font-medium">
+                        Spécialiste du déstockage de colis non-réclamés en Haute-Normandie. 
+                        Une démarche responsable pour redonner vie aux oubliés du e-commerce.
+                    </p>
+                </div>
+    
+                <div class="space-y-6">
+                    <h5 class="text-[10px] font-black uppercase tracking-[0.4em] text-caux-orange">Exploration</h5>
+                    <ul class="space-y-4 text-sm font-bold text-slate-300">
+                        <li><a href="#accueil" class="hover:text-caux-orange transition flex items-center gap-2"><i class="fa-solid fa-chevron-right text-[10px]"></i> Accueil</a></li>
+                        <li><a href="#concept" class="hover:text-caux-orange transition flex items-center gap-2"><i class="fa-solid fa-chevron-right text-[10px]"></i> Notre Concept</a></li>
+                        <li><a href="#boutique" class="hover:text-caux-orange transition flex items-center gap-2"><i class="fa-solid fa-chevron-right text-[10px]"></i> Réserver un Lot</a></li>
+                        <li><a href="#contact" class="hover:text-caux-orange transition flex items-center gap-2"><i class="fa-solid fa-chevron-right text-[10px]"></i> Support Client</a></li>
+                    </ul>
+                </div>
+    
+                <div class="space-y-6">
+                    <h5 class="text-[10px] font-black uppercase tracking-[0.4em] text-caux-orange">Juridique</h5>
+                    <ul class="space-y-4 text-sm font-bold text-slate-300">
+                        <li><a href="mention-légales.html" class="hover:text-caux-orange transition">Mentions Légales</a></li>
+                        <li><a href="CGV-CGU.html" class="hover:text-caux-orange transition">CGV / CGU</a></li>
+                        <li><a href="politique-de-confidentialité.html" class="hover:text-caux-orange transition">Confidentialité</a></li>
+                    </ul>
+                </div>
+    
+                <div class="space-y-6">
+                    <h5 class="text-[10px] font-black uppercase tracking-[0.4em] text-caux-orange">Localisation</h5>
+                    <div class="p-6 bg-slate-800/50 rounded-[2rem] border border-slate-700 backdrop-blur-sm">
+                        <p class="text-[10px] font-black text-caux-orange mb-2 uppercase tracking-widest">Marché de Caudebec</p>
+                        <p class="text-lg font-black italic mb-1">Samedi matin</p>
+                        <p class="text-xs text-slate-400 font-bold">8h00 — 12h30</p>
+                    </div>
+                </div>
+            </div>
+    
+            <div class="pt-12 border-t border-slate-800 flex flex-col md:flex-row justify-between items-center gap-8">
+                <div class="space-y-3 text-center md:text-left">
+                    <p class="text-[10px] font-black uppercase tracking-[0.2em] text-slate-500">
+                        © 2026 <span class="text-white">Caux-lis Perdus</span> — Entreprise dirigée par <span class="text-white">Ethan Giera</span>
+                    </p>
+                    <p class="text-[9px] font-bold uppercase tracking-[0.3em] text-slate-600">
+                        Propulsé par <span class="text-slate-400 italic">Infinity ERP</span> — Design & Dev par <span class="text-caux-orange">Antonin Thorel</span>
+                    </p>
+                </div>
+    
+                <div class="flex items-center gap-8">
+                    <div class="flex gap-4 opacity-30 grayscale hover:opacity-100 hover:grayscale-0 transition-all duration-500">
+                        <i class="fa-brands fa-cc-visa text-2xl"></i>
+                        <i class="fa-brands fa-cc-mastercard text-2xl"></i>
+                        <i class="fa-brands fa-apple-pay text-3xl"></i>
+                    </div>
+                    <div class="flex gap-4 border-l border-slate-800 pl-8">
+                        <a href="#" class="text-slate-500 hover:text-caux-orange transition"><i class="fa-brands fa-instagram text-xl"></i></a>
+                        <a href="#" class="text-slate-500 hover:text-caux-orange transition"><i class="fa-brands fa-facebook text-xl"></i></a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <div id="auth-modal" class="fixed inset-0 z-[300] hidden flex items-center justify-center p-6">
+        <div onclick="toggleAuth()" class="absolute inset-0 bg-caux-deep/90 backdrop-blur-xl"></div>
+        <div class="bg-white w-full max-w-lg rounded-[4rem] overflow-hidden shadow-2xl relative z-10 animate-in fade-in zoom-in duration-300">
+            <div class="p-16 space-y-8">
+                <div class="text-center space-y-2">
+                    <h3 id="auth-title" class="hero-title text-4xl">Bon retour !</h3>
+                    <p class="text-slate-400 font-medium text-sm">Gérez vos réservations et contactez-nous.</p>
+                </div>
+
+                <div id="signup-fields" class="hidden space-y-4">
+                    <div class="grid grid-cols-2 gap-4">
+                        <input type="text" id="user-prenom" placeholder="Prénom" class="input-caux">
+                        <input type="text" id="user-nom" placeholder="Nom" class="input-caux">
+                    </div>
+                </div>
+
+                <div class="space-y-4">
+                    <input type="email" id="user-email" placeholder="Email" class="input-caux">
+                    <input type="password" id="user-pass" placeholder="Mot de passe" class="input-caux">
+                    <button onclick="handleAuthAction()" id="auth-main-btn" class="w-full btn-primary py-5">Se connecter</button>
+                </div>
+
+                <div class="text-center">
+                    <button onclick="switchAuthMode()" id="auth-switch-btn" class="text-[10px] font-black uppercase text-caux-orange tracking-widest hover:underline">Pas de compte ? Créer un profil</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="client-sidebar" class="fixed inset-0 z-[250] hidden">
+        <div onclick="toggleSidebar()" class="absolute inset-0 bg-caux-deep/60 backdrop-blur-sm"></div>
+        <div id="sidebar-panel" class="absolute top-0 right-0 w-full max-w-md h-full bg-white translate-x-full transition-transform duration-500 shadow-2xl p-10 flex flex-col">
+            <div class="flex justify-between items-center mb-12">
+                <h3 class="hero-title text-3xl italic">Tableau de Bord</h3>
+                <button onclick="toggleSidebar()" class="w-12 h-12 rounded-full bg-slate-100 flex items-center justify-center hover:bg-caux-orange hover:text-white transition"><i class="fa-solid fa-times text-xl"></i></button>
+            </div>
+
+            <div class="flex-grow space-y-8 overflow-y-auto pr-2">
+                <div class="p-8 bg-slate-50 rounded-[2.5rem] border border-slate-100 space-y-6">
+                    <h4 class="text-[10px] font-black uppercase text-caux-orange tracking-widest">Ma Réservation en cours</h4>
+                    <div id="sidebar-order-empty" class="text-center py-6 italic text-slate-400 text-sm">Aucune commande active.</div>
+                    <div id="sidebar-order-active" class="hidden space-y-6">
+                        <div class="flex justify-between items-end border-b border-slate-200 pb-4">
+                            <div>
+                                <p class="text-[10px] font-black text-slate-400 uppercase mb-1 tracking-tighter">ID Unique</p>
+                                <p id="side-id" class="text-xl font-black text-caux-deep italic">---</p>
+                            </div>
+                            <div class="text-right">
+                                <p id="side-total" class="text-2xl font-black text-caux-orange">0.00€</p>
+                            </div>
+                        </div>
+                        <div id="side-qr" class="flex justify-center p-6 bg-white rounded-3xl"></div>
+                        <p class="text-center text-[10px] font-bold text-slate-400 uppercase">Présentez ce QR au stand de Caudebec.</p>
+                    </div>
+                </div>
+
+                <div class="p-8 bg-white rounded-[2.5rem] border border-slate-100 space-y-4 shadow-sm">
+                    <h4 class="text-[10px] font-black uppercase text-slate-400 tracking-widest">Mes Informations</h4>
+                    <p id="side-info-name" class="font-black text-caux-deep uppercase">---</p>
+                    <p id="side-info-email" class="text-sm text-slate-500 font-medium italic">---</p>
+                </div>
+            </div>
+
+            <div class="mt-auto pt-10 border-t border-slate-100">
+                <button onclick="handleLogout()" class="w-full py-4 text-[10px] font-black uppercase tracking-widest text-red-500 hover:bg-red-50 rounded-2xl transition">Déconnexion sécurisée</button>
+            </div>
+        </div>
+    </div>
+
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+        import { getAuth, onAuthStateChanged, signInWithEmailAndPassword, createUserWithEmailAndPassword, signOut, updateProfile } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
+        import { getDatabase, ref, onValue, set, push, update } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js";
+
+        // FIREBASE CONFIG
+        const firebaseConfig = {
+            apiKey: "AIzaSyCsXy7k8bVdQowzIeSWL5c-kUMfCJgyVyA",
+            authDomain: "caux-lis-perdus.firebaseapp.com",
+            databaseURL: "https://caux-lis-perdus-default-rtdb.firebaseio.com",
+            projectId: "caux-lis-perdus",
+            storageBucket: "caux-lis-perdus.firebasestorage.app",
+            messagingSenderId: "687946100062",
+            appId: "1:687946100062:web:6c6d864bcd88d77a6733cf"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+        const db = getDatabase(app);
+
+        let state = {
+            user: null,
+            price: 10,
+            isOpen: true,
+            isLogin: true
+        };
+
+        // 1. SYNC REGLAGES ADMIN
+        onValue(ref(db, 'reglages'), (snap) => {
+            const data = snap.val() || {};
+            state.price = data.prixUnitaire || 10;
+            state.isOpen = data.boutiqueOuverte !== false;
+            
+            document.getElementById('display-price').innerText = state.price + "€/KG";
+            document.getElementById('total-val').innerText = (document.getElementById('order-qty').value * state.price).toFixed(2);
+
+            if(!state.isOpen) {
+                document.getElementById('shop-closed-alert').classList.remove('hidden');
+                document.getElementById('btn-submit-order').classList.add('hidden');
+            } else if(state.user) {
+                document.getElementById('btn-submit-order').classList.remove('hidden');
+            }
+        });
+
+        // 2. AUTHENTIFICATION
+        window.toggleAuth = () => {
+            const modal = document.getElementById('auth-modal');
+            modal.classList.toggle('hidden');
+        };
+
+        window.switchAuthMode = () => {
+            state.isLogin = !state.isLogin;
+            document.getElementById('auth-title').innerText = state.isLogin ? "Bon retour !" : "Rejoindre l'aventure";
+            document.getElementById('auth-main-btn').innerText = state.isLogin ? "Se connecter" : "Créer mon compte";
+            document.getElementById('auth-switch-btn').innerText = state.isLogin ? "Pas de compte ? Créer un profil" : "Déjà membre ? Se connecter";
+            document.getElementById('signup-fields').classList.toggle('hidden', state.isLogin);
+        };
+
+        window.handleAuthAction = async () => {
+            const email = document.getElementById('user-email').value;
+            const pass = document.getElementById('user-pass').value;
+
+            try {
+                if(state.isLogin) {
+                    await signInWithEmailAndPassword(auth, email, pass);
+                } else {
+                    const prenom = document.getElementById('user-prenom').value;
+                    const nom = document.getElementById('user-nom').value;
+                    const res = await createUserWithEmailAndPassword(auth, email, pass);
+                    await updateProfile(res.user, { displayName: `${prenom} ${nom}` });
+                    await set(ref(db, `users/${res.user.uid}`), { prenom, nom, email });
+                }
+                toggleAuth();
+            } catch(e) { alert("Erreur: " + e.message); }
+        };
+
+        window.handleLogout = () => {
+            signOut(auth);
+            toggleSidebar();
+        };
+
+        onAuthStateChanged(auth, (user) => {
+            state.user = user;
+            if(user) {
+                document.getElementById('nav-auth-btn').classList.add('hidden');
+                document.getElementById('nav-user-info').classList.remove('hidden');
+                document.getElementById('nav-user-name').innerText = user.displayName || "Client";
+                document.getElementById('order-auth-warning').classList.add('hidden');
+                if(state.isOpen) document.getElementById('btn-submit-order').classList.remove('hidden');
+                
+                // Messagerie logic
+                document.getElementById('msg-auth-check').classList.add('hidden');
+                document.getElementById('msg-form').classList.remove('hidden');
+                document.getElementById('msg-sender-name').innerText = user.displayName;
+                
+                syncUserData(user);
+            } else {
+                document.getElementById('nav-auth-btn').classList.remove('hidden');
+                document.getElementById('nav-user-info').classList.add('hidden');
+                document.getElementById('order-auth-warning').classList.remove('hidden');
+                document.getElementById('btn-submit-order').classList.add('hidden');
+                document.getElementById('msg-auth-check').classList.remove('hidden');
+                document.getElementById('msg-form').classList.add('hidden');
+            }
+        });
+
+        // 3. COMMANDE & MESSAGERIE
+        window.changeQty = (delta) => {
+            const input = document.getElementById('order-qty');
+            let val = parseInt(input.value) + delta;
+            if(val < 1) val = 1;
+            input.value = val;
+            document.getElementById('total-val').innerText = (val * state.price).toFixed(2);
+        };
+
+        window.sendReservation = async () => {
+            if(!state.user) return;
+            const qty = parseFloat(document.getElementById('order-qty').value);
+            const orderId = "CAUX-" + Math.random().toString(36).substr(2, 6).toUpperCase();
+
+            const orderData = {
+                orderId,
+                userName: state.user.displayName,
+                userId: state.user.uid,
+                email: state.user.email,
+                poidsTotal: qty,
+                prixTotal: qty * state.price,
+                status: "ATTENTE",
+                timestamp: Date.now()
+            };
+
+            await set(ref(db, `reservations/${orderId}`), orderData);
+            alert("Réservation réussie ! Retrouvez votre QR Code dans votre espace client.");
+            toggleSidebar();
+        };
+
+        window.sendMessage = async () => {
+            const content = document.getElementById('msg-content').value;
+            if(!content) return;
+
+            const msgData = {
+                sender: state.user.displayName,
+                senderEmail: state.user.email,
+                userId: state.user.uid,
+                message: content,
+                timestamp: Date.now(),
+                read: false
+            };
+
+            await push(ref(db, 'messages'), msgData);
+            alert("Message envoyé à l'équipe !");
+            document.getElementById('msg-content').value = "";
+        };
+
+        // 4. SIDEBAR LOGIC
+        window.toggleSidebar = () => {
+            const sidebar = document.getElementById('client-sidebar');
+            const panel = document.getElementById('sidebar-panel');
+            if(sidebar.classList.contains('hidden')) {
+                sidebar.classList.remove('hidden');
+                setTimeout(() => panel.style.transform = "translateX(0)", 10);
+            } else {
+                panel.style.transform = "translateX(100%)";
+                setTimeout(() => sidebar.classList.add('hidden'), 500);
+            }
+        };
+
+        function syncUserData(user) {
+            document.getElementById('side-info-name').innerText = user.displayName;
+            document.getElementById('side-info-email').innerText = user.email;
+
+            onValue(ref(db, 'reservations'), (snap) => {
+                const data = snap.val();
+                if(!data) return;
+                const myOrder = Object.values(data).find(o => o.userId === user.uid && o.status !== "FINI");
+                
+                if(myOrder) {
+                    document.getElementById('sidebar-order-empty').classList.add('hidden');
+                    document.getElementById('sidebar-order-active').classList.remove('hidden');
+                    document.getElementById('side-id').innerText = "#" + myOrder.orderId;
+                    document.getElementById('side-total').innerText = myOrder.prixTotal.toFixed(2) + "€";
+                    document.getElementById('side-qr').innerHTML = `<img src="https://api.qrserver.com/v1/create-qr-code/?size=180x180&data=${myOrder.orderId}" class="w-40 h-40">`;
+                } else {
+                    document.getElementById('sidebar-order-empty').classList.remove('hidden');
+                    document.getElementById('sidebar-order-active').classList.add('hidden');
+                }
+            });
+        }
+    </script>
+</body>
+</html>
