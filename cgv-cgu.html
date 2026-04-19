@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CGV / CGU | Caux-lis Perdus</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:ital,wght@0,200..800;1,200..800&family=Instrument+Serif:ital@0;1&display=swap');
+        :root { --accent: #ea580c; }
+        body { font-family: 'Plus Jakarta Sans', sans-serif; background-color: #ffffff; color: #0f172a; }
+        .font-serif { font-family: 'Instrument Serif', serif; }
+        .text-outline { -webkit-text-stroke: 1px #0f172a; color: transparent; }
+        .bg-pattern { background-image: radial-gradient(#e2e8f0 1px, transparent 1px); background-size: 32px 32px; }
+    </style>
+</head>
+<body class="antialiased bg-pattern">
+    <nav class="fixed top-0 w-full z-[100] bg-white/80 backdrop-blur-md border-b border-slate-100 py-4">
+        <div class="max-w-7xl mx-auto px-6 flex justify-between items-center text-sm">
+            <a href="index.html" class="font-serif italic text-2xl tracking-tighter">Caux-lis Perdus</a>
+            <a href="index.html" class="px-6 py-2 bg-slate-900 text-white rounded-full text-[10px] font-black uppercase tracking-widest hover:bg-orange-600 transition">Retour</a>
+        </div>
+    </nav>
+
+    <header class="pt-48 pb-24 px-6 max-w-7xl mx-auto border-b-2 border-slate-900">
+        <span class="text-[10px] font-black uppercase tracking-[0.5em] text-orange-600 mb-4 block">02 — Règles du jeu</span>
+        <h1 class="font-serif italic leading-[0.8] tracking-tighter">
+            <span class="text-7xl md:text-[10rem] block">Conditions</span>
+            <span class="text-7xl md:text-[10rem] block md:ml-40 text-outline italic">de Vente.</span>
+        </h1>
+    </header>
+
+    <main class="max-w-7xl mx-auto px-6 py-24">
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-20">
+            <div class="lg:col-span-5">
+                <div class="p-8 bg-slate-900 rounded-[3rem] text-white space-y-6">
+                    <p class="font-serif italic text-3xl">"L'aléa fait partie du contrat."</p>
+                    <p class="text-xs text-slate-400 leading-relaxed font-bold uppercase tracking-widest">En validant votre panier, vous acceptez le principe de l'achat mystère.</p>
+                </div>
+            </div>
+            <div class="lg:col-span-7 space-y-16">
+                <section>
+                    <h2 class="text-xs font-black uppercase tracking-[0.4em] text-slate-400 mb-6 italic underline decoration-orange-500 decoration-2 underline-offset-8">Objet de la vente</h2>
+                    <p class="text-slate-600 leading-relaxed">Caux-lis Perdus propose la vente au poids de colis non réclamés. Le contenu est totalement inconnu de l'acheteur comme du vendeur.</p>
+                </section>
+                <section>
+                    <h2 class="text-xs font-black uppercase tracking-[0.4em] text-slate-400 mb-6 italic underline decoration-orange-500 decoration-2 underline-offset-8">Absence de Rétractation</h2>
+                    <p class="text-slate-600 leading-relaxed mb-4">Conformément à l’article L221-28 du Code de la consommation, le droit de rétractation ne s'applique pas aux biens descellés par le consommateur après la livraison.</p>
+                    <div class="bg-orange-50 p-6 rounded-2xl border border-orange-100 text-orange-900 font-bold text-sm italic">
+                        "Aucun remboursement ne sera effectué une fois le colis ouvert."
+                    </div>
+                </section>
+                <section>
+                    <h2 class="text-xs font-black uppercase tracking-[0.4em] text-slate-400 mb-6 italic underline decoration-orange-500 decoration-2 underline-offset-8">Prix & Paiement</h2>
+                    <p class="text-slate-600 leading-relaxed text-sm">Les prix sont fixés au kilogramme. Le paiement s'effectue sur le stand par CB ou Espèces après pesée finale de votre réservation.</p>
+                </section>
+            </div>
+        </div>
+    </main>
+</body>
+</html>

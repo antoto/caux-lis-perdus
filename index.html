@@ -3,396 +3,518 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Caux-lis Perdus | Plateforme Officielle Normandie</title>
+    <title>Caux-lis Perdus | Système de Gestion Intégré</title>
     
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
-
-    <script>
-        tailwind.config = {
-            theme: {
-                extend: {
-                    colors: { 
-                        'caux-orange': '#f97316',
-                        'caux-deep': '#020617',
-                        'caux-gold': '#fbbf24',
-                        'caux-bg': '#fafaf9'
-                    },
-                    fontFamily: {
-                        'main': ['Plus Jakarta Sans', 'sans-serif'],
-                        'serif': ['Fraunces', 'serif']
-                    }
-                }
-            }
-        }
-    </script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+    <script src="https://unpkg.com/html5-qrcode"></script>
 
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;600;700;800&family=Fraunces:ital,opsz,wght@1,9..144,700;1,9..144,900&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;600;800&family=Fraunces:ital,wght@1,800&display=swap');
         
-        body { font-family: 'Plus Jakarta Sans', sans-serif; background-color: #fafaf9; scroll-behavior: smooth; }
+        body { font-family: 'Plus Jakarta Sans', sans-serif; scroll-behavior: smooth; background: #fcfcfc; }
+        .font-serif { font-family: 'Fraunces', serif; }
+        .glass { background: rgba(255, 255, 255, 0.85); backdrop-filter: blur(15px); }
+        .page-section { display: none; }
+        .page-section.active { display: block; animation: slideUp 0.4s ease-out; }
+        @keyframes slideUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
         
-        .glass-nav { background: rgba(255, 255, 255, 0.8); backdrop-filter: blur(20px); border-bottom: 1px solid rgba(0,0,0,0.05); }
+        .btn-premium { background: linear-gradient(135deg, #f97316 0%, #ea580c 100%); transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); }
+        .btn-premium:hover { transform: translateY(-2px); box-shadow: 0 12px 24px rgba(249, 115, 22, 0.3); }
         
-        .hero-title { font-family: 'Fraunces', serif; letter-spacing: -0.04em; }
-        
-        .btn-primary { @apply px-8 py-4 bg-caux-orange text-white rounded-2xl font-black uppercase tracking-widest text-[11px] transition-all hover:scale-105 hover:shadow-2xl hover:shadow-orange-500/30 active:scale-95 flex items-center justify-center gap-3; }
-        .btn-secondary { @apply px-8 py-4 bg-caux-deep text-white rounded-2xl font-black uppercase tracking-widest text-[11px] transition-all hover:bg-slate-800; }
-
-        .input-caux { @apply w-full p-5 bg-white border border-slate-200 rounded-2xl outline-none focus:ring-4 focus:ring-orange-500/10 focus:border-caux-orange transition-all font-semibold text-slate-700; }
-
-        .card-reveal { transition: transform 0.6s cubic-bezier(0.22, 1, 0.36, 1), opacity 0.6s; }
-        
-        .floating { animation: float 6s ease-in-out infinite; }
-        @keyframes float { 0% { transform: translateY(0px); } 50% { transform: translateY(-20px); } 100% { transform: translateY(0px); } }
-        
-        ::-webkit-scrollbar { width: 6px; }
-        ::-webkit-scrollbar-thumb { background: #ea580c; border-radius: 10px; }
+        /* Masquage des éléments Admin par défaut */
+        .admin-view { display: none; }
+        body.is-admin .admin-view { display: block; }
+        body.is-admin .client-view { display: none; }
     </style>
 </head>
-<body class="overflow-x-hidden">
+<body class="text-slate-900">
 
-    <nav class="fixed w-full z-[100] glass-nav py-5 px-6">
-        <div class="max-w-7xl mx-auto flex items-center justify-between">
-            <a href="#accueil" class="flex items-center gap-3">
-                <div class="w-12 h-12 bg-white rounded-2xl flex items-center justify-center overflow-hidden shadow-lg shadow-orange-500/10 border border-slate-100">
-                    <img src="logo.png" alt="Logo Caux-lis" class="w-full h-full object-cover">
-                </div>
-                
+    <nav class="fixed w-full z-[100] glass border-b border-slate-200">
+        <div class="max-w-7xl mx-auto px-6 h-20 flex items-center justify-between">
+            <div class="flex items-center gap-3 cursor-pointer" onclick="showPage('home')">
+                <img src="logo.png" class="h-12 w-12 rounded-xl object-cover shadow-md">
                 <div>
-                    <span class="text-xl font-black tracking-tighter uppercase block leading-none text-caux-deep">Caux-lis</span>
-                    <span class="text-[9px] font-black uppercase tracking-[0.3em] text-caux-orange">Perdus Normandie</span>
+                    <span class="text-xl font-black uppercase tracking-tighter block leading-none italic">Caux-lis</span>
+                    <span class="text-[9px] font-black uppercase tracking-[0.3em] text-orange-600">Perdus Normandie</span>
                 </div>
-            </a>
-
-            <div class="hidden lg:flex items-center gap-10 font-extrabold text-[11px] uppercase tracking-widest">
-                <a href="#accueil" class="hover:text-caux-orange transition">Accueil</a>
-                <a href="#concept" class="hover:text-caux-orange transition">Concept</a>
-                <a href="#boutique" class="hover:text-caux-orange transition">Commander</a>
-                <a href="#contact" class="hover:text-caux-orange transition">Support</a>
             </div>
 
-            <div class="flex items-center gap-4">
-                <button onclick="toggleAuth()" id="nav-auth-btn" class="btn-secondary py-3 px-6">
-                    <i class="fa-solid fa-user-circle text-lg"></i> <span class="hidden sm:inline">Mon Compte</span>
-                </button>
-                <div id="nav-user-info" class="hidden flex items-center gap-3">
-                    <div class="text-right hidden sm:block">
-                        <p class="text-[10px] font-black text-slate-400 uppercase leading-none mb-1">Bienvenue</p>
-                        <p id="nav-user-name" class="text-xs font-black text-caux-deep uppercase">Client</p>
-                    </div>
-                    <button onclick="toggleSidebar()" class="w-12 h-12 rounded-2xl bg-caux-orange text-white shadow-lg"><i class="fa-solid fa-bars-staggered"></i></button>
+            <div class="hidden md:flex items-center gap-8 text-[10px] font-black uppercase tracking-widest text-slate-500">
+                <a href="#" onclick="showPage('home')" class="hover:text-orange-500 transition">Accueil</a>
+                <a href="#" onclick="showPage('histoire')" class="hover:text-orange-500 transition">Notre Histoire</a>
+                <a href="#" onclick="showPage('shop')" class="hover:text-orange-500 transition">Commander</a>
+                <div class="admin-view border-l pl-8 border-slate-300">
+                    <a href="#" onclick="showPage('admin-dashboard')" class="text-red-600 hover:text-red-700 flex items-center gap-2">
+                        <i class="fa-solid fa-gauge-high"></i> DASHBOARD ETHAN
+                    </a>
                 </div>
+            </div>
+
+            <div id="nav-auth-zone" class="flex items-center gap-4">
+                <button onclick="showPage('login')" class="px-6 py-2 rounded-full border-2 border-slate-100 font-black text-[10px] uppercase tracking-widest hover:bg-slate-50 transition">Connexion</button>
             </div>
         </div>
     </nav>
 
-    <section id="accueil" class="relative pt-48 pb-32 px-6 overflow-hidden min-h-screen flex items-center">
-        <div class="absolute top-[-10%] right-[-10%] w-[600px] h-[600px] bg-orange-200/40 rounded-full blur-[120px] -z-10"></div>
-        <div class="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-2 gap-20">
-            <div class="space-y-10">
-                <div class="inline-flex items-center gap-2 px-4 py-2 bg-white border border-slate-100 rounded-full shadow-sm">
-                    <span class="flex h-2 w-2 bg-orange-500 rounded-full animate-ping"></span>
-                    <span class="text-[10px] font-black uppercase tracking-widest">Arrivage Samedi : 850kg attendus</span>
+    <section id="page-home" class="page-section active pt-40 pb-20">
+        <div class="max-w-7xl mx-auto px-6 grid lg:grid-cols-2 gap-16 items-center">
+            <div class="space-y-8">
+                <span class="bg-orange-100 text-orange-600 px-4 py-2 rounded-full text-[10px] font-black uppercase tracking-widest italic">📍 Marché de Rives-en-Seine</span>
+                <h1 class="text-8xl font-serif italic leading-[0.85] tracking-tighter">Le <span class="text-orange-500 underline decoration-4 underline-offset-8">Mystère</span> <br>à la pesée.</h1>
+                <p class="text-lg text-slate-500 font-medium max-w-md">Découvrez des trésors cachés dans les colis égarés du monde entier. Chaque samedi, récupérez votre lot sur la Place d'Armes.</p>
+                <div class="flex gap-4 pt-4">
+                    <button onclick="showPage('shop')" class="btn-premium text-white px-10 py-5 rounded-2xl font-black uppercase text-xs tracking-widest">Réserver mon colis</button>
+                    <button onclick="showPage('histoire')" class="bg-white border-2 border-slate-100 px-10 py-5 rounded-2xl font-black uppercase text-xs tracking-widest hover:bg-slate-50 transition">L'Histoire</button>
                 </div>
-                <h1 class="hero-title text-7xl md:text-9xl text-caux-deep leading-none">
-                    Le frisson de <br> <span class="text-caux-orange italic">l'inconnu.</span>
-                </h1>
-                <p class="text-lg text-slate-500 max-w-lg leading-relaxed font-medium">
-                    Ne laissez plus les colis perdus prendre la poussière. Rachetez-les au poids, déballez-les, et découvrez des trésors cachés. <br>
-                    <span class="text-caux-deep font-bold italic">Un concept unique sur le marché de Caudebec.</span>
+            </div>
+            <div class="relative">
+                <img src="logo.png" class="rounded-[4rem] shadow-2xl rotate-3 hover:rotate-0 transition-transform duration-700">
+                <div class="absolute -bottom-8 -left-8 glass p-8 rounded-[2.5rem] shadow-xl border border-white">
+                    <p class="text-[10px] font-black text-slate-400 uppercase italic">Prochain déballage</p>
+                    <p class="text-4xl font-serif italic text-slate-900">Samedi 8h00</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="page-histoire" class="page-section pt-40 pb-20">
+        <div class="max-w-7xl mx-auto px-6">
+            
+            <div class="max-w-3xl mb-32">
+                <h2 class="text-[10vw] md:text-[7vw] font-serif italic leading-[0.8] tracking-tighter mb-12">
+                    L'aventure des <br><span class="text-orange-500">colis oubliés.</span>
+                </h2>
+                <p class="text-2xl md:text-3xl font-medium text-slate-600 leading-tight italic">
+                    Chaque année, des millions de paquets se perdent dans le labyrinthe de la logistique. Nous les sauvons pour vous offrir une seconde chance de les découvrir.
                 </p>
-                <div class="flex flex-col sm:row gap-5 pt-4">
-                    <a href="#boutique" class="btn-primary">Tenter l'expérience <i class="fa-solid fa-arrow-right"></i></a>
-                    <a href="#concept" class="px-8 py-4 border-2 border-slate-200 rounded-2xl font-black uppercase tracking-widest text-[11px] text-center hover:bg-white transition">D'où viennent-ils ?</a>
-                </div>
             </div>
-            <div class="relative flex items-center justify-center">
-                <div class="floating w-full max-w-lg aspect-square bg-white rounded-[4rem] shadow-2xl p-10 rotate-3 border border-slate-100 relative overflow-hidden">
-                    <img src="logo.png" class="w-full h-full object-cover rounded-[3rem] opacity-90">
-                    <div class="absolute bottom-8 left-8 right-8 glass-nav p-6 rounded-3xl border border-white/50 shadow-xl">
-                        <div class="flex justify-between items-center">
-                            <span class="text-xs font-black uppercase text-slate-400">Tarif Unique Stand</span>
-                            <span class="text-3xl font-[900] text-caux-orange" id="display-price">10€/KG</span>
-                        </div>
+
+            <div class="grid lg:grid-cols-12 gap-8 items-start mb-40">
+                <div class="lg:col-span-7 relative">
+                    <img src="https://images.unsplash.com/photo-1580674285054-bed31e145f59?auto=format&fit=crop&q=80&w=1200" class="rounded-[3rem] shadow-2xl w-full h-[600px] object-cover" alt="Tas de colis">
+                    <div class="absolute -bottom-10 -right-10 bg-white p-10 rounded-[3rem] shadow-2xl max-w-sm hidden md:block border border-slate-100">
+                        <p class="text-xs font-black uppercase tracking-[0.2em] text-orange-500 mb-4">Le Concept</p>
+                        <p class="text-lg font-bold leading-snug">
+                            On ne vend pas un objet. On vend l'adrénaline de l'ouverture. Un poids brut, un prix fixe, et des milliers de possibilités.
+                        </p>
+                    </div>
+                </div>
+                <div class="lg:col-span-5 lg:pt-20 space-y-12">
+                    <div class="space-y-4">
+                        <h3 class="text-sm font-black uppercase tracking-widest text-slate-400">01. Le Constat</h3>
+                        <p class="text-xl font-medium text-slate-600">
+                            Un NPAI (N'habite Pas à l'Adresse Indiquée), un code barre illisible, ou un point relais jamais visité... Ces colis sont normalement détruits. C'est un gâchis immense que nous transformons en opportunité.
+                        </p>
+                    </div>
+                    <div class="space-y-4">
+                        <h3 class="text-sm font-black uppercase tracking-widest text-slate-400">02. La Transparence</h3>
+                        <p class="text-xl font-medium text-slate-600">
+                            Nous rachetons ces lots par tonnes. Ils arrivent chez nous scellés. <span class="text-slate-900 font-bold">Nous ne savons pas ce qu'il y a dedans.</span> C'est la règle d'or : Ethan ne triche pas, le hasard décide de tout.
+                        </p>
                     </div>
                 </div>
             </div>
-        </div>
-    </section>
 
-    <section id="concept" class="py-40 bg-caux-deep text-white rounded-[5rem] mx-6">
-        <div class="max-w-7xl mx-auto px-10">
-            <div class="text-center space-y-6 mb-32">
-                <h2 class="text-caux-orange font-black uppercase tracking-[0.5em] text-xs italic">Notre Histoire</h2>
-                <h3 class="hero-title text-5xl md:text-7xl">Du centre de tri <br> à votre salon.</h3>
-            </div>
-
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-16">
-                <div class="space-y-8 p-10 bg-slate-800/40 rounded-[3rem] border border-slate-700">
-                    <div class="w-16 h-16 bg-caux-orange/20 rounded-2xl flex items-center justify-center text-caux-orange text-3xl"><i class="fa-solid fa-plane-slash"></i></div>
-                    <h4 class="text-2xl font-black italic uppercase">1. L'Escale Perdue</h4>
-                    <p class="text-slate-400 leading-relaxed font-medium">Chaque jour, des milliers de colis sont égarés suite à des erreurs d'étiquetage ou des adresses incomplètes. Ils finissent par saturer les entrepôts mondiaux.</p>
-                </div>
-                <div class="space-y-8 p-10 bg-slate-800/40 rounded-[3rem] border border-slate-700">
-                    <div class="w-16 h-16 bg-caux-orange/20 rounded-2xl flex items-center justify-center text-caux-orange text-3xl"><i class="fa-solid fa-recycle"></i></div>
-                    <h4 class="text-2xl font-black italic uppercase">2. Le Sauvetage</h4>
-                    <p class="text-slate-400 leading-relaxed font-medium">Au lieu de les incinérer, nous rachetons ces lots par tonnes. Notre mission est de redonner une utilité à ces objets orphelins dans une démarche circulaire.</p>
-                </div>
-                <div class="space-y-8 p-10 bg-slate-800/40 rounded-[3rem] border border-slate-700">
-                    <div class="w-16 h-16 bg-caux-orange/20 rounded-2xl flex items-center justify-center text-caux-orange text-3xl"><i class="fa-solid fa-gift"></i></div>
-                    <h4 class="text-2xl font-black italic uppercase">3. La Surprise</h4>
-                    <p class="text-slate-400 leading-relaxed font-medium">Rien n'est ouvert avant la vente. Vous achetez une boîte mystère géante au poids. Électronique, mode, ou décoration... l'adrénaline est garantie.</p>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <section id="boutique" class="py-40 px-6">
-        <div class="max-w-6xl mx-auto">
-            <div class="grid grid-cols-1 lg:grid-cols-5 bg-white rounded-[4rem] shadow-2xl shadow-orange-900/10 border border-slate-100 overflow-hidden">
-                <div class="lg:col-span-2 bg-caux-orange p-16 text-white flex flex-col justify-between relative overflow-hidden">
-                    <div class="relative z-10">
-                        <h3 class="hero-title text-5xl leading-none mb-8">Réservez votre <br> lot.</h3>
-                        <p class="font-bold opacity-80 leading-relaxed">Soyez sûr d'avoir vos kilos de bonheur ! Réservez en ligne et venez retirer votre commande au stand le samedi matin.</p>
-                    </div>
-                    <div class="space-y-6 relative z-10">
-                        <div class="flex items-center gap-4 bg-white/10 p-4 rounded-2xl backdrop-blur-md">
-                            <i class="fa-solid fa-clock text-2xl"></i>
-                            <span class="text-[10px] font-black uppercase tracking-widest">Retrait Samedi : 8h00 - 12h30</span>
-                        </div>
-                        <div class="flex items-center gap-4 bg-white/10 p-4 rounded-2xl backdrop-blur-md">
-                            <i class="fa-solid fa-location-arrow text-2xl"></i>
-                            <span class="text-[10px] font-black uppercase tracking-widest">Place de la Mairie, Caudebec</span>
-                        </div>
-                    </div>
+            <div class="bg-slate-900 rounded-[5rem] p-8 md:p-20 text-white overflow-hidden relative">
+                <div class="absolute top-0 right-0 opacity-10 translate-x-1/4 -translate-y-1/4">
+                    <i class="fa-solid fa-box-archive text-[400px]"></i>
                 </div>
 
-                <div class="lg:col-span-3 p-16 space-y-12">
-                    <div id="shop-closed-alert" class="hidden p-6 bg-red-50 text-red-600 rounded-3xl border border-red-100 text-center font-black uppercase text-xs tracking-widest">
-                        <i class="fa-solid fa-lock mr-2"></i> Les réservations en ligne sont suspendues.
-                    </div>
-
+                <div class="relative z-10 grid lg:grid-cols-2 gap-20 items-center">
                     <div class="space-y-8">
-                        <div>
-                            <label class="text-[10px] font-black uppercase text-slate-400 ml-4 mb-3 block tracking-[0.2em]">Quantité de colis (KG)</label>
-                            <div class="flex items-center gap-4">
-                                <button onclick="changeQty(-1)" class="w-16 h-16 rounded-2xl bg-slate-50 border border-slate-200 text-2xl font-black hover:bg-caux-orange hover:text-white transition shadow-sm">-</button>
-                                <input type="number" id="order-qty" value="1" min="1" class="flex-grow text-center text-4xl font-black outline-none text-caux-deep">
-                                <button onclick="changeQty(1)" class="w-16 h-16 rounded-2xl bg-slate-50 border border-slate-200 text-2xl font-black hover:bg-caux-orange hover:text-white transition shadow-sm">+</button>
+                        <span class="px-5 py-2 bg-white/10 rounded-full text-[10px] font-black uppercase tracking-widest">Le rendez-vous du samedi</span>
+                        <h3 class="text-5xl md:text-7xl font-serif italic leading-none">Rendez-vous sur la <span class="text-orange-500">Place d'Armes</span></h3>
+                        <p class="text-xl text-slate-400 font-medium leading-relaxed">
+                            Caux-lis Perdus, ce n'est pas qu'un site web. C'est une ambiance de marché à Rives-en-Seine (Caudebec-en-Caux). On discute, on pèse, et surtout... on ouvre ! 
+                        </p>
+                        <div class="flex items-center gap-6 pt-4">
+                            <div class="h-16 w-16 rounded-full border-2 border-orange-500 flex items-center justify-center">
+                                <i class="fa-solid fa-play text-orange-500 ml-1"></i>
+                            </div>
+                            <div>
+                                <p class="text-sm font-black uppercase">Voir l'ambiance</p>
+                                <p class="text-xs text-slate-500">Prochain déballage : Samedi 8h00</p>
                             </div>
                         </div>
-
-                        <div class="p-8 bg-slate-900 rounded-[2.5rem] flex items-center justify-between text-white shadow-xl shadow-slate-900/20">
-                            <span class="text-xs font-black uppercase tracking-widest text-slate-500">Total Estimation</span>
-                            <span class="text-4xl font-black text-caux-orange"><span id="total-val">10.00</span> €</span>
-                        </div>
-
-                        <div id="order-auth-warning" class="p-6 bg-orange-50 rounded-2xl border border-orange-100 text-center">
-                            <p class="text-xs font-bold text-slate-600 mb-3">Connectez-vous pour finaliser la réservation en 1 clic.</p>
-                            <button onclick="toggleAuth()" class="text-[10px] font-black uppercase text-caux-orange tracking-widest">Se connecter / S'inscrire</button>
-                        </div>
-
-                        <button onclick="sendReservation()" id="btn-submit-order" class="hidden w-full btn-primary py-6 text-sm">Confirmer ma réservation</button>
                     </div>
+                    
+                    <div class="grid grid-cols-2 gap-4 rotate-3">
+                        <img src="https://images.unsplash.com/photo-1553413077-190dd305871c?auto=format&fit=crop&q=80&w=400" class="rounded-3xl shadow-xl hover:-translate-y-2 transition-transform duration-500" alt="Carton">
+                        <img src="logo.png" class="rounded-3xl shadow-xl translate-y-8 hover:-translate-y-2 transition-transform duration-500" alt="Logo">
+                        <img src="https://images.unsplash.com/photo-1606813907291-d86ebb9c74ad?auto=format&fit=crop&q=80&w=400" class="rounded-3xl shadow-xl -translate-y-4 hover:-translate-y-2 transition-transform duration-500" alt="Émotion">
+                        <img src="https://images.unsplash.com/photo-1513061397148-71811b3e929e?auto=format&fit=crop&q=80&w=400" class="rounded-3xl shadow-xl translate-y-4 hover:-translate-y-2 transition-transform duration-500" alt="Marché">
+                    </div>
+                </div>
+            </div>
+
+            <div class="mt-40 text-center space-y-10">
+                <p class="text-4xl md:text-6xl font-serif italic max-w-4xl mx-auto leading-tight">
+                    "On ne sait jamais si on va tomber sur une <span class="underline decoration-orange-500">montre connectée</span> ou un <span class="underline decoration-orange-500">set de cuisine</span>, et c'est ça qui est génial."
+                </p>
+                <button onclick="showPage('shop')" class="bg-orange-600 text-white px-12 py-6 rounded-full font-black uppercase text-sm tracking-[0.3em] hover:bg-orange-700 transition shadow-2xl">
+                    Réserver mon lot de mystère
+                </button>
+            </div>
+        </div>
+    </section>
+
+    <section id="page-shop" class="page-section pt-40 pb-20">
+        <div class="max-w-7xl mx-auto px-6">
+            <div class="flex flex-col md:flex-row justify-between items-end mb-16 gap-8">
+                <div>
+                    <h2 class="text-5xl font-serif italic">Réservez votre <span class="text-orange-500">Poids</span></h2>
+                    <p class="text-slate-400 font-black uppercase text-[10px] tracking-widest mt-2 italic">📍 Récupération le samedi matin uniquement</p>
+                </div>
+                <div class="bg-white p-6 rounded-3xl border border-slate-100 shadow-xl flex items-center gap-10">
+                    <div>
+                        <p class="text-[9px] font-black text-slate-400 uppercase">Stock Dispo</p>
+                        <p id="client-stock" class="text-2xl font-black italic">-- KG</p>
+                    </div>
+                    <div class="h-10 w-px bg-slate-100"></div>
+                    <div>
+                        <p class="text-[9px] font-black text-slate-400 uppercase">Prix/KG</p>
+                        <p id="client-price" class="text-2xl font-black italic text-orange-600">-- €</p>
+                    </div>
+                </div>
+            </div>
+
+            <div id="shop-locked" class="hidden bg-red-50 border-2 border-dashed border-red-200 p-20 rounded-[4rem] text-center">
+                <i class="fa-solid fa-store-slash text-5xl text-red-500 mb-6"></i>
+                <h3 class="text-3xl font-black italic mb-2">Les réservations sont fermées</h3>
+                <p class="text-red-400 font-bold uppercase text-xs tracking-widest">Revenez plus tard ou passez directement nous voir sur le marché.</p>
+            </div>
+
+            <div id="shop-grid" class="grid md:grid-cols-3 gap-8">
+                <div class="bg-white p-12 rounded-[3.5rem] border border-slate-100 shadow-sm hover:shadow-2xl transition-all group">
+                    <div class="h-16 w-16 bg-orange-50 text-orange-600 rounded-2xl flex items-center justify-center text-3xl mb-8 group-hover:rotate-12 transition">
+                        <i class="fa-solid fa-box-open"></i>
+                    </div>
+                    <h3 class="text-2xl font-black mb-4 italic">Pack Curiosité</h3>
+                    <div class="text-5xl font-serif italic mb-10">2 KG</div>
+                    <button onclick="order(2)" class="w-full py-5 rounded-2xl bg-slate-900 text-white font-black uppercase text-[10px] tracking-widest hover:bg-orange-600 transition">Réserver ce lot</button>
+                </div>
+                <div class="bg-slate-900 p-12 rounded-[3.5rem] shadow-2xl scale-105 relative overflow-hidden">
+                    <div class="absolute top-6 right-6 bg-orange-500 text-white px-4 py-1 rounded-full text-[9px] font-black uppercase tracking-widest italic">Populaire</div>
+                    <div class="h-16 w-16 bg-white/10 text-orange-500 rounded-2xl flex items-center justify-center text-3xl mb-8">
+                        <i class="fa-solid fa-boxes-stacked"></i>
+                    </div>
+                    <h3 class="text-2xl font-black mb-4 italic text-white">Pack Passion</h3>
+                    <div class="text-5xl font-serif italic mb-10 text-white">5 KG</div>
+                    <button onclick="order(5)" class="w-full py-5 rounded-2xl bg-orange-500 text-white font-black uppercase text-[10px] tracking-widest hover:scale-105 transition">Réserver ce lot</button>
+                </div>
+                <div class="bg-white p-12 rounded-[3.5rem] border border-slate-100 shadow-sm">
+                    <div class="h-16 w-16 bg-slate-50 text-slate-400 rounded-2xl flex items-center justify-center text-3xl mb-8">
+                        <i class="fa-solid fa-weight-hanging"></i>
+                    </div>
+                    <h3 class="text-2xl font-black mb-4 italic">Sur Mesure</h3>
+                    <div class="flex items-center gap-4 mb-10">
+                        <input type="number" id="custom-kg" placeholder="KG" class="w-full bg-slate-50 border-none p-5 rounded-2xl text-3xl font-black outline-none focus:ring-2 ring-orange-500">
+                        <span class="text-2xl font-serif italic text-slate-400">KG</span>
+                    </div>
+                    <button onclick="order(document.getElementById('custom-kg').value)" class="w-full py-5 rounded-2xl border-2 border-slate-100 font-black uppercase text-[10px] tracking-widest hover:bg-slate-50 transition">Commander</button>
                 </div>
             </div>
         </div>
     </section>
 
-    <section id="contact" class="py-40 px-6 bg-slate-50">
-        <div class="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-2 gap-24">
-            <div class="space-y-12">
-                <h2 class="hero-title text-6xl">Besoin d'aide ? <br> Écrivez-nous.</h2>
-                <div class="space-y-8">
-                    <div class="flex items-start gap-6">
-                        <div class="w-14 h-14 bg-white rounded-2xl shadow-sm flex items-center justify-center text-caux-orange text-2xl"><i class="fa-solid fa-envelope-open-text"></i></div>
-                        <div>
-                            <h4 class="font-black text-caux-deep uppercase text-sm mb-1 tracking-widest">Support Email</h4>
-                            <p class="text-slate-500 font-bold">contact@caux-lisperdus.fr</p>
-                        </div>
-                    </div>
-                    <div class="flex items-start gap-6">
-                        <div class="w-14 h-14 bg-white rounded-2xl shadow-sm flex items-center justify-center text-caux-orange text-2xl"><i class="fa-solid fa-headset"></i></div>
-                        <div>
-                            <h4 class="font-black text-caux-deep uppercase text-sm mb-1 tracking-widest">Assistance Stand</h4>
-                            <p class="text-slate-500 font-bold">06.00.00.00.00 (Uniquement le samedi)</p>
-                        </div>
-                    </div>
+    <section id="page-client" class="page-section pt-40 pb-20">
+        <div class="max-w-7xl mx-auto px-6 grid lg:grid-cols-3 gap-12">
+            <div class="space-y-8">
+                <div class="bg-white p-10 rounded-[3.5rem] shadow-sm border border-slate-100">
+                    <h3 class="text-2xl font-serif italic mb-8">Mes Informations</h3>
+                    <form id="profile-form" class="space-y-4">
+                        <input type="text" id="prof-nom" placeholder="Nom" class="w-full p-4 bg-slate-50 rounded-xl font-bold border-none">
+                        <input type="text" id="prof-prenom" placeholder="Prénom" class="w-full p-4 bg-slate-50 rounded-xl font-bold border-none">
+                        <input type="tel" id="prof-tel" placeholder="Téléphone" class="w-full p-4 bg-slate-50 rounded-xl font-bold border-none">
+                        <button type="submit" class="w-full py-4 bg-slate-900 text-white rounded-xl font-black uppercase text-[10px] tracking-widest">Mettre à jour</button>
+                    </form>
+                    <button onclick="logout()" class="w-full mt-6 text-red-500 text-[9px] font-black uppercase tracking-widest">Se déconnecter</button>
                 </div>
+
+                <div class="bg-orange-50 p-10 rounded-[3.5rem] border border-orange-100">
+                    <h3 class="text-xl font-black italic mb-4">Contact Direct</h3>
+                    <textarea id="msg-content" placeholder="Une question sur votre commande ?" class="w-full h-32 p-4 rounded-2xl border-none mb-4 text-sm"></textarea>
+                    <button onclick="sendMessage()" class="w-full py-4 bg-orange-600 text-white rounded-xl font-black uppercase text-[10px] tracking-widest">Envoyer</button>
+                </div>
+            </div>
+
+            <div class="lg:col-span-2 bg-white p-10 rounded-[3.5rem] shadow-sm border border-slate-100 min-h-[500px]">
+                <h3 class="text-3xl font-serif italic mb-10">Mes Réservations en cours</h3>
+                <div id="client-orders" class="space-y-6">
+                    </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="page-login" class="page-section pt-40 pb-20">
+        <div class="max-w-md mx-auto px-6">
+            <div class="bg-white p-12 rounded-[4rem] shadow-2xl border border-slate-100">
+                <div class="flex gap-6 mb-12">
+                    <button id="tab-login" onclick="setAuthMode('login')" class="flex-1 pb-4 border-b-4 border-orange-600 font-black text-[11px] uppercase tracking-widest italic">Connexion</button>
+                    <button id="tab-signup" onclick="setAuthMode('signup')" class="flex-1 pb-4 border-b-4 border-slate-100 font-black text-[11px] uppercase tracking-widest italic text-slate-300">Inscription</button>
+                </div>
+                <form id="auth-form" class="space-y-4">
+                    <div id="signup-only" class="hidden space-y-4">
+                        <div class="grid grid-cols-2 gap-4">
+                            <input type="text" id="reg-nom" placeholder="Nom" class="w-full p-4 bg-slate-50 rounded-xl font-bold border-none">
+                            <input type="text" id="reg-prenom" placeholder="Prénom" class="w-full p-4 bg-slate-50 rounded-xl font-bold border-none">
+                        </div>
+                        <input type="tel" id="reg-tel" placeholder="N° de téléphone" class="w-full p-4 bg-slate-50 rounded-xl font-bold border-none">
+                    </div>
+                    <input type="email" id="auth-email" placeholder="Email" class="w-full p-4 bg-slate-50 rounded-xl font-bold border-none" required>
+                    <input type="password" id="auth-pass" placeholder="Mot de passe" class="w-full p-4 bg-slate-50 rounded-xl font-bold border-none" required>
+                    <button type="submit" class="w-full py-5 btn-premium text-white rounded-2xl font-black uppercase text-xs tracking-widest mt-6 italic">C'est parti</button>
+                </form>
+            </div>
+        </div>
+    </section>
+
+    <section id="page-admin-dashboard" class="page-section pt-40 pb-20 admin-view">
+        <div class="max-w-7xl mx-auto px-6 space-y-12">
+            <div class="flex flex-col md:flex-row justify-between items-center gap-6">
+                <h2 class="text-5xl font-serif italic">Console <span class="text-red-600">Ethan</span></h2>
                 <div class="flex gap-4">
-                    <a href="#" class="w-14 h-14 bg-caux-deep text-white rounded-2xl flex items-center justify-center text-xl hover:bg-caux-orange transition-all"><i class="fa-brands fa-instagram"></i></a>
-                    <a href="#" class="w-14 h-14 bg-caux-deep text-white rounded-2xl flex items-center justify-center text-xl hover:bg-caux-orange transition-all"><i class="fa-brands fa-facebook-f"></i></a>
+                    <button onclick="showPage('admin-pos')" class="px-8 py-4 bg-orange-600 text-white rounded-2xl font-black uppercase text-xs tracking-widest shadow-lg shadow-orange-500/20">
+                        <i class="fa-solid fa-cash-register mr-2"></i> Terminal de Vente
+                    </button>
+                    <button onclick="openManualInvoice()" class="px-8 py-4 bg-slate-900 text-white rounded-2xl font-black uppercase text-xs tracking-widest">
+                        <i class="fa-solid fa-file-invoice-dollar mr-2"></i> Facture Manuelle
+                    </button>
                 </div>
             </div>
 
-            <div class="glass-nav p-12 rounded-[3.5rem] shadow-xl border border-white">
-                <div id="msg-auth-check" class="space-y-6">
-                    <p class="text-center text-slate-400 font-medium">Veuillez vous connecter pour envoyer un message à l'administration.</p>
-                    <button onclick="toggleAuth()" class="w-full btn-secondary">Connexion requise</button>
-                </div>
-                
-                <div id="msg-form" class="hidden space-y-6">
-                    <div class="p-4 bg-orange-100/50 rounded-2xl border border-orange-200">
-                        <p class="text-[10px] font-black uppercase text-caux-orange">Expéditeur : <span id="msg-sender-name">---</span></p>
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-6">
+                <div class="bg-white p-8 rounded-[3rem] border border-slate-100 shadow-sm">
+                    <p class="text-[10px] font-black text-slate-400 uppercase tracking-widest italic mb-4">Stock (KG)</p>
+                    <div class="flex items-center justify-between">
+                        <input type="number" id="adm-stock" class="text-4xl font-black w-24 outline-none text-slate-900 bg-transparent">
+                        <button onclick="updateSettings('stock', document.getElementById('adm-stock').value)" class="h-10 w-10 bg-orange-50 text-orange-600 rounded-xl hover:bg-orange-600 hover:text-white transition"><i class="fa-solid fa-save"></i></button>
                     </div>
-                    <textarea id="msg-content" rows="6" placeholder="Votre question sur un arrivage ou une commande..." class="input-caux"></textarea>
-                    <button onclick="sendMessage()" class="w-full btn-primary py-5">Envoyer le message <i class="fa-solid fa-paper-plane"></i></button>
+                </div>
+                <div class="bg-white p-8 rounded-[3rem] border border-slate-100 shadow-sm">
+                    <p class="text-[10px] font-black text-slate-400 uppercase tracking-widest italic mb-4">Prix/KG (€)</p>
+                    <div class="flex items-center justify-between">
+                        <input type="number" id="adm-price" step="0.5" class="text-4xl font-black w-24 outline-none text-slate-900 bg-transparent">
+                        <button onclick="updateSettings('price', document.getElementById('adm-price').value)" class="h-10 w-10 bg-orange-50 text-orange-600 rounded-xl hover:bg-orange-600 hover:text-white transition"><i class="fa-solid fa-save"></i></button>
+                    </div>
+                </div>
+                <div class="bg-slate-900 p-8 rounded-[3rem] shadow-xl text-white">
+                    <p class="text-[10px] font-black text-slate-500 uppercase tracking-widest italic mb-4">Total Ventes</p>
+                    <p id="adm-ca" class="text-4xl font-black italic text-orange-500">0.00 €</p>
+                </div>
+                <div class="bg-white p-8 rounded-[3rem] border border-slate-100 shadow-sm flex flex-col justify-between">
+                    <p class="text-[10px] font-black text-slate-400 uppercase tracking-widest italic mb-2">Boutique</p>
+                    <button id="shop-toggle" onclick="toggleShop()" class="w-full py-3 rounded-xl font-black text-[10px] uppercase tracking-tighter transition">CHARGEMENT...</button>
+                </div>
+            </div>
+
+            <div class="grid lg:grid-cols-2 gap-10">
+                <div class="bg-white p-10 rounded-[4rem] border border-slate-100 shadow-sm">
+                    <h3 class="text-xl font-black italic mb-6">Messages & Questions</h3>
+                    <div id="adm-messages" class="space-y-4 max-h-[400px] overflow-y-auto pr-2"></div>
+                </div>
+                <div class="bg-white p-10 rounded-[4rem] border border-slate-100 shadow-sm">
+                    <h3 class="text-xl font-black italic mb-6">Dernières Transactions</h3>
+                    <div id="adm-sales" class="space-y-4 max-h-[400px] overflow-y-auto pr-2"></div>
                 </div>
             </div>
         </div>
     </section>
 
-    <footer class="bg-caux-deep pt-32 pb-16 px-6 text-white rounded-[5rem] mx-6 mb-6">
-        <div class="max-w-7xl mx-auto">
-            <div class="grid grid-cols-1 md:grid-cols-4 gap-20 mb-20">
-                
-                <div class="col-span-1 space-y-8">
-                    <div class="flex items-center gap-4">
-                        <div class="w-12 h-12 bg-white rounded-2xl flex items-center justify-center overflow-hidden shadow-lg">
-                            <img src="logo.png" alt="Logo Caux-lis" class="w-full h-full object-cover">
-                        </div>
-                        <div>
-                            <span class="text-2xl font-black uppercase tracking-tighter block leading-none italic">Caux-lis</span>
-                            <span class="text-[9px] font-black uppercase tracking-[0.3em] text-caux-orange">Normandie</span>
-                        </div>
+    <section id="page-admin-pos" class="page-section pt-40 pb-20 admin-view">
+        <div class="max-w-4xl mx-auto px-6">
+            <div class="bg-white p-10 rounded-[4rem] shadow-2xl border border-slate-100">
+                <div class="text-center mb-10">
+                    <button onclick="showPage('admin-dashboard')" class="text-[10px] font-black uppercase text-slate-400 hover:text-orange-600 mb-4 transition">← Retour au Dashboard</button>
+                    <h2 class="text-4xl font-serif italic">Terminal <span class="text-orange-500">Point de Vente</span></h2>
+                </div>
+
+                <div class="grid md:grid-cols-2 gap-10 mb-10">
+                    <div class="bg-slate-50 p-8 rounded-[3rem] border-2 border-dashed border-slate-200">
+                        <label class="block text-[10px] font-black uppercase mb-4 text-center">Validation Web (QR Code)</label>
+                        <div id="reader" class="rounded-2xl overflow-hidden shadow-inner mb-4"></div>
+                        <input type="text" id="manual-id" placeholder="ID (ex: CL-1234)" class="w-full p-4 bg-white rounded-xl font-black text-center mb-2 uppercase">
+                        <button onclick="lookupOrder(document.getElementById('manual-id').value)" class="w-full py-4 bg-slate-900 text-white rounded-xl font-black text-xs uppercase">Chercher</button>
                     </div>
-                    <p class="text-slate-500 text-sm leading-relaxed font-medium">
-                        Spécialiste du déstockage de colis non-réclamés en Haute-Normandie. 
-                        Une démarche responsable pour redonner vie aux oubliés du e-commerce.
-                    </p>
+
+                    <div class="bg-orange-50 p-8 rounded-[3rem] border border-orange-100 flex flex-col justify-center">
+                        <label class="block text-[10px] font-black uppercase mb-4 text-orange-600 text-center">Pesée en Direct (Marché)</label>
+                        <div class="flex items-center gap-4 mb-6">
+                            <input type="number" id="pos-direct-kg" placeholder="0.00" class="w-full p-6 rounded-2xl text-4xl font-black text-center shadow-sm">
+                            <span class="text-2xl font-serif italic text-orange-600">KG</span>
+                        </div>
+                        <button onclick="previewDirect()" class="w-full py-5 bg-orange-600 text-white rounded-2xl font-black text-xs uppercase shadow-lg shadow-orange-500/30 italic">Annoncer le prix</button>
+                    </div>
                 </div>
-    
-                <div class="space-y-6">
-                    <h5 class="text-[10px] font-black uppercase tracking-[0.4em] text-caux-orange">Exploration</h5>
-                    <ul class="space-y-4 text-sm font-bold text-slate-300">
-                        <li><a href="#accueil" class="hover:text-caux-orange transition flex items-center gap-2"><i class="fa-solid fa-chevron-right text-[10px]"></i> Accueil</a></li>
-                        <li><a href="#concept" class="hover:text-caux-orange transition flex items-center gap-2"><i class="fa-solid fa-chevron-right text-[10px]"></i> Notre Concept</a></li>
-                        <li><a href="#boutique" class="hover:text-caux-orange transition flex items-center gap-2"><i class="fa-solid fa-chevron-right text-[10px]"></i> Réserver un Lot</a></li>
-                        <li><a href="#contact" class="hover:text-caux-orange transition flex items-center gap-2"><i class="fa-solid fa-chevron-right text-[10px]"></i> Support Client</a></li>
-                    </ul>
-                </div>
-    
-                <div class="space-y-6">
-                    <h5 class="text-[10px] font-black uppercase tracking-[0.4em] text-caux-orange">Juridique</h5>
-                    <ul class="space-y-4 text-sm font-bold text-slate-300">
-                        <li><a href="mention-légales.html" class="hover:text-caux-orange transition">Mentions Légales</a></li>
-                        <li><a href="CGV-CGU.html" class="hover:text-caux-orange transition">CGV / CGU</a></li>
-                        <li><a href="politique-de-confidentialité.html" class="hover:text-caux-orange transition">Confidentialité</a></li>
-                    </ul>
-                </div>
-    
-                <div class="space-y-6">
-                    <h5 class="text-[10px] font-black uppercase tracking-[0.4em] text-caux-orange">Localisation</h5>
-                    <div class="p-6 bg-slate-800/50 rounded-[2rem] border border-slate-700 backdrop-blur-sm">
-                        <p class="text-[10px] font-black text-caux-orange mb-2 uppercase tracking-widest">Marché de Caudebec</p>
-                        <p class="text-lg font-black italic mb-1">Samedi matin</p>
-                        <p class="text-xs text-slate-400 font-bold">8h00 — 12h30</p>
+
+                <div id="checkout-confirm" class="hidden bg-slate-900 p-10 rounded-[3rem] text-white animate-pulse">
+                    <div class="text-center space-y-4">
+                        <h4 id="confirm-type" class="text-orange-500 font-black uppercase text-[10px] tracking-widest">TYPE DE VENTE</h4>
+                        <div class="flex justify-center items-baseline gap-2">
+                            <span id="confirm-price" class="text-7xl font-black italic">0.00 €</span>
+                            <span class="text-slate-500 text-xl font-serif italic">TTC</span>
+                        </div>
+                        <p id="confirm-details" class="text-slate-400 font-bold uppercase text-xs">Détails de la pesée</p>
+                        <div class="flex gap-4 pt-6">
+                            <button onclick="cancelCheckout()" class="flex-1 py-4 bg-white/10 rounded-xl font-black text-[10px] uppercase">Annuler</button>
+                            <button onclick="finalizeCheckout()" class="flex-1 py-4 bg-orange-600 text-white rounded-xl font-black text-[10px] uppercase shadow-xl">Valider & Facture</button>
+                        </div>
                     </div>
                 </div>
             </div>
-    
-            <div class="pt-12 border-t border-slate-800 flex flex-col md:flex-row justify-between items-center gap-8">
-                <div class="space-y-3 text-center md:text-left">
-                    <p class="text-[10px] font-black uppercase tracking-[0.2em] text-slate-500">
-                        © 2026 <span class="text-white">Caux-lis Perdus</span> — Entreprise dirigée par <span class="text-white">Ethan Giera</span>
-                    </p>
-                    <p class="text-[9px] font-bold uppercase tracking-[0.3em] text-slate-600">
-                        Propulsé par <span class="text-slate-400 italic">Infinity ERP</span> — Design & Dev par <span class="text-caux-orange">Antonin Thorel</span>
-                    </p>
+        </div>
+    </section>
+
+    <div id="manual-invoice-modal" class="fixed inset-0 z-[200] glass flex items-center justify-center p-6 hidden">
+        <div class="bg-white w-full max-w-lg p-10 rounded-[3.5rem] shadow-2xl border border-slate-100">
+            <h3 class="text-3xl font-serif italic mb-6 text-center">Édition <span class="text-orange-500">Manuelle</span></h3>
+            <div class="space-y-4">
+                <input type="text" id="man-client" placeholder="Nom du client" class="w-full p-4 bg-slate-50 rounded-xl font-bold border-none">
+                <input type="text" id="man-item" placeholder="Désignation (ex: Lot Spécial, Objet HighTech...)" class="w-full p-4 bg-slate-50 rounded-xl font-bold border-none">
+                <div class="grid grid-cols-2 gap-4">
+                    <input type="number" id="man-qty" placeholder="Quantité / KG" class="w-full p-4 bg-slate-50 rounded-xl font-bold border-none">
+                    <input type="number" id="man-price" placeholder="Prix Total (€)" class="w-full p-4 bg-slate-50 rounded-xl font-bold border-none text-orange-600">
                 </div>
-    
-                <div class="flex items-center gap-8">
-                    <div class="flex gap-4 opacity-30 grayscale hover:opacity-100 hover:grayscale-0 transition-all duration-500">
-                        <i class="fa-brands fa-cc-visa text-2xl"></i>
-                        <i class="fa-brands fa-cc-mastercard text-2xl"></i>
-                        <i class="fa-brands fa-apple-pay text-3xl"></i>
+                <div class="flex gap-4 pt-4">
+                    <button onclick="closeManualInvoice()" class="flex-1 py-4 font-black uppercase text-[10px] text-slate-400">Fermer</button>
+                    <button onclick="generateManualInvoice()" class="flex-1 py-4 bg-slate-900 text-white rounded-xl font-black uppercase text-[10px]">Générer PDF</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div style="position: absolute; left: -9999px; top: -9999px;">
+        <div id="invoice-render-zone" class="p-16 bg-white" style="width: 800px; min-height: 1100px; color: #0f172a;">
+            <div class="flex justify-between items-start border-b-8 border-slate-900 pb-12 mb-12">
+                <div>
+                    <img src="logo.png" style="height: 80px; width: 80px; border-radius: 15px; margin-bottom: 20px;">
+                    <h1 class="text-4xl font-black italic uppercase tracking-tighter">Caux-lis Perdus</h1>
+                    <p class="font-bold text-slate-500">Ethan GIERA | Marché de Rives-en-Seine</p>
+                    <p class="text-xs font-bold text-slate-400">Place d'Armes, 76490 Rives-en-Seine</p>
+                </div>
+                <div class="text-right">
+                    <h2 class="text-5xl font-serif italic text-orange-500">FACTURE</h2>
+                    <p class="font-black mt-4" id="inv-render-id">#ID-0000</p>
+                    <p class="text-sm font-bold" id="inv-render-date">00/00/2026</p>
+                </div>
+            </div>
+
+            <div class="mb-12">
+                <p class="text-[10px] font-black uppercase text-slate-400 tracking-widest mb-2">Facturé à :</p>
+                <p id="inv-render-client" class="text-xl font-black italic underline decoration-orange-500 decoration-2">Client de passage</p>
+            </div>
+
+            <table class="w-full text-left mb-20">
+                <thead>
+                    <tr class="border-b-2 border-slate-900 text-[10px] font-black uppercase tracking-widest">
+                        <th class="py-4">Description du lot</th>
+                        <th class="py-4 text-center">Poids / Qté</th>
+                        <th class="py-4 text-right">P.U (€)</th>
+                        <th class="py-4 text-right">Total (€)</th>
+                    </tr>
+                </thead>
+                <tbody class="font-bold text-lg italic" id="inv-render-rows">
+                    </tbody>
+            </table>
+
+            <div class="flex justify-end border-t-2 border-slate-50 pt-8">
+                <div class="w-64 space-y-4">
+                    <div class="flex justify-between text-xs font-bold text-slate-400 uppercase">
+                        <span>Total HT</span><span id="inv-render-ht">0.00 €</span>
                     </div>
-                    <div class="flex gap-4 border-l border-slate-800 pl-8">
-                        <a href="#" class="text-slate-500 hover:text-caux-orange transition"><i class="fa-brands fa-instagram text-xl"></i></a>
-                        <a href="#" class="text-slate-500 hover:text-caux-orange transition"><i class="fa-brands fa-facebook text-xl"></i></a>
+                    <div class="flex justify-between text-xs font-bold text-slate-400 uppercase">
+                        <span>TVA (20%)</span><span id="inv-render-tva">0.00 €</span>
+                    </div>
+                    <div class="flex justify-between items-center text-4xl font-serif italic border-t-4 border-slate-900 pt-6">
+                        <span>Total</span><span id="inv-render-total" class="text-orange-600">0.00 €</span>
                     </div>
                 </div>
             </div>
+
+            <div class="mt-40 pt-10 border-t border-slate-100 text-center">
+                <p class="text-[9px] font-black uppercase tracking-[0.4em] text-slate-300">Merci de votre confiance. Caux-lis Perdus Normandie</p>
+                <p class="text-[8px] text-slate-400 mt-2">Ethan GIERA - SIRET en cours - TVA non applicable (Art. 293 B du CGI)</p>
+            </div>
+        </div>
+    </div>
+
+    <div id="invoice-box" class="hidden p-20 bg-white" style="width: 800px; font-family: 'Plus Jakarta Sans', sans-serif;">
+        <div class="flex justify-between border-b-8 border-slate-900 pb-10 mb-10">
+            <div>
+                <h1 class="text-6xl font-serif italic mb-4">FACTURE</h1>
+                <p class="text-xl font-black italic">CAUX-LIS PERDUS</p>
+                <p class="text-sm">Rives-en-Seine | Place d'Armes</p>
+                <p class="text-sm">Ethan GIERA</p>
+            </div>
+            <div class="text-right">
+                <p class="text-xs font-black uppercase text-slate-400 mb-2">Détails de la vente</p>
+                <p id="inv-id" class="font-black text-2xl">--</p>
+                <p id="inv-date" class="text-sm font-bold">--/--/--</p>
+            </div>
+        </div>
+        <table class="w-full mb-20 text-left">
+            <thead class="border-b-2 border-slate-900 font-black uppercase text-[10px]">
+                <tr><th class="py-4">Description</th><th class="py-4 text-center">Qté (KG)</th><th class="py-4 text-right">Prix/KG</th><th class="py-4 text-right">Total</th></tr>
+            </thead>
+            <tbody id="inv-items" class="font-bold text-lg italic">
+                </tbody>
+        </table>
+        <div class="flex justify-end pt-10 border-t-2 border-slate-100">
+            <div class="w-72 space-y-4">
+                <div class="flex justify-between text-slate-400 uppercase text-[10px] font-black"><span>Total HT</span><span id="inv-ht">0€</span></div>
+                <div class="flex justify-between text-slate-400 uppercase text-[10px] font-black"><span>TVA (20%)</span><span id="inv-tva">0€</span></div>
+                <div class="flex justify-between text-5xl font-serif italic border-t-4 border-slate-900 pt-6"><span>Total</span><span id="inv-total">0€</span></div>
+            </div>
+        </div>
+        <div class="mt-40 text-center text-[10px] text-slate-400 font-bold uppercase tracking-widest">Merci de votre confiance | Caux-lis Perdus</div>
+    </div>
+
+    <footer class="bg-slate-900 pt-32 pb-16 text-white rounded-t-[5rem] mx-2">
+        <div class="max-w-7xl mx-auto px-6">
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-20 border-b border-white/5 pb-20">
+                <div class="space-y-8">
+                    <img src="logo.png" class="h-16 w-16 rounded-2xl grayscale opacity-40">
+                    <p class="text-slate-500 text-sm leading-relaxed italic">"Le mystère normand au service de l'écologie. Ne laissez plus rien se perdre."</p>
+                </div>
+                <div class="space-y-6">
+                    <h5 class="text-xs font-black text-orange-500 uppercase tracking-widest italic">Navigation</h5>
+                    <ul class="text-slate-400 space-y-4 text-sm font-bold">
+                        <li><a href="#" onclick="showPage('home')" class="hover:text-white transition">Accueil</a></li>
+                        <li><a href="#" onclick="showPage('shop')" class="hover:text-white transition">Commander</a></li>
+                        <li><a href="#" onclick="showPage('histoire')" class="hover:text-white transition">Concept</a></li>
+                    </ul>
+                </div>
+                <div class="space-y-6">
+                    <h5 class="text-xs font-black text-orange-500 uppercase tracking-widest italic">Informations</h5>
+                    <ul class="text-slate-400 space-y-4 text-sm font-bold">
+                        <li><a href="mentions-legales.html" class="hover:text-white transition">Mentions Légales</a></li>
+                        <li><a href="cgv-cgu.html" class="hover:text-white transition">CGV / CGU</a></li>
+                        <li><a href="confidentialite.html" class="hover:text-white transition">Confidentialité</a></li>
+                    </ul>
+                </div>
+                <div class="space-y-8">
+                    <div>
+                        <p class="text-[10px] font-black text-slate-600 uppercase mb-2">Propriétaire</p>
+                        <p class="text-xl font-serif italic">Ethan GIERA</p>
+                    </div>
+                    <div>
+                        <p class="text-[10px] font-black text-slate-600 uppercase mb-2">Digitalisation</p>
+                        <p class="text-sm font-black italic text-orange-500">Antonin THOREL</p>
+                    </div>
+                </div>
+            </div>
+            <p class="mt-12 text-center text-[9px] text-slate-700 font-black uppercase tracking-[0.5em]">© 2026 Caux-lis Perdus - Tous droits réservés</p>
         </div>
     </footer>
-
-    <div id="auth-modal" class="fixed inset-0 z-[300] hidden flex items-center justify-center p-6">
-        <div onclick="toggleAuth()" class="absolute inset-0 bg-caux-deep/90 backdrop-blur-xl"></div>
-        <div class="bg-white w-full max-w-lg rounded-[4rem] overflow-hidden shadow-2xl relative z-10 animate-in fade-in zoom-in duration-300">
-            <div class="p-16 space-y-8">
-                <div class="text-center space-y-2">
-                    <h3 id="auth-title" class="hero-title text-4xl">Bon retour !</h3>
-                    <p class="text-slate-400 font-medium text-sm">Gérez vos réservations et contactez-nous.</p>
-                </div>
-
-                <div id="signup-fields" class="hidden space-y-4">
-                    <div class="grid grid-cols-2 gap-4">
-                        <input type="text" id="user-prenom" placeholder="Prénom" class="input-caux">
-                        <input type="text" id="user-nom" placeholder="Nom" class="input-caux">
-                    </div>
-                </div>
-
-                <div class="space-y-4">
-                    <input type="email" id="user-email" placeholder="Email" class="input-caux">
-                    <input type="password" id="user-pass" placeholder="Mot de passe" class="input-caux">
-                    <button onclick="handleAuthAction()" id="auth-main-btn" class="w-full btn-primary py-5">Se connecter</button>
-                </div>
-
-                <div class="text-center">
-                    <button onclick="switchAuthMode()" id="auth-switch-btn" class="text-[10px] font-black uppercase text-caux-orange tracking-widest hover:underline">Pas de compte ? Créer un profil</button>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <div id="client-sidebar" class="fixed inset-0 z-[250] hidden">
-        <div onclick="toggleSidebar()" class="absolute inset-0 bg-caux-deep/60 backdrop-blur-sm"></div>
-        <div id="sidebar-panel" class="absolute top-0 right-0 w-full max-w-md h-full bg-white translate-x-full transition-transform duration-500 shadow-2xl p-10 flex flex-col">
-            <div class="flex justify-between items-center mb-12">
-                <h3 class="hero-title text-3xl italic">Tableau de Bord</h3>
-                <button onclick="toggleSidebar()" class="w-12 h-12 rounded-full bg-slate-100 flex items-center justify-center hover:bg-caux-orange hover:text-white transition"><i class="fa-solid fa-times text-xl"></i></button>
-            </div>
-
-            <div class="flex-grow space-y-8 overflow-y-auto pr-2">
-                <div class="p-8 bg-slate-50 rounded-[2.5rem] border border-slate-100 space-y-6">
-                    <h4 class="text-[10px] font-black uppercase text-caux-orange tracking-widest">Ma Réservation en cours</h4>
-                    <div id="sidebar-order-empty" class="text-center py-6 italic text-slate-400 text-sm">Aucune commande active.</div>
-                    <div id="sidebar-order-active" class="hidden space-y-6">
-                        <div class="flex justify-between items-end border-b border-slate-200 pb-4">
-                            <div>
-                                <p class="text-[10px] font-black text-slate-400 uppercase mb-1 tracking-tighter">ID Unique</p>
-                                <p id="side-id" class="text-xl font-black text-caux-deep italic">---</p>
-                            </div>
-                            <div class="text-right">
-                                <p id="side-total" class="text-2xl font-black text-caux-orange">0.00€</p>
-                            </div>
-                        </div>
-                        <div id="side-qr" class="flex justify-center p-6 bg-white rounded-3xl"></div>
-                        <p class="text-center text-[10px] font-bold text-slate-400 uppercase">Présentez ce QR au stand de Caudebec.</p>
-                    </div>
-                </div>
-
-                <div class="p-8 bg-white rounded-[2.5rem] border border-slate-100 space-y-4 shadow-sm">
-                    <h4 class="text-[10px] font-black uppercase text-slate-400 tracking-widest">Mes Informations</h4>
-                    <p id="side-info-name" class="font-black text-caux-deep uppercase">---</p>
-                    <p id="side-info-email" class="text-sm text-slate-500 font-medium italic">---</p>
-                </div>
-            </div>
-
-            <div class="mt-auto pt-10 border-t border-slate-100">
-                <button onclick="handleLogout()" class="w-full py-4 text-[10px] font-black uppercase tracking-widest text-red-500 hover:bg-red-50 rounded-2xl transition">Déconnexion sécurisée</button>
-            </div>
-        </div>
-    </div>
 
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
         import { getAuth, onAuthStateChanged, signInWithEmailAndPassword, createUserWithEmailAndPassword, signOut, updateProfile } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
-        import { getDatabase, ref, onValue, set, push, update } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js";
-
-        // FIREBASE CONFIG
+        import { getDatabase, ref, set, update, push, onValue, remove } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js";
+    
         const firebaseConfig = {
             apiKey: "AIzaSyCsXy7k8bVdQowzIeSWL5c-kUMfCJgyVyA",
             authDomain: "caux-lis-perdus.firebaseapp.com",
@@ -402,179 +524,353 @@
             messagingSenderId: "687946100062",
             appId: "1:687946100062:web:6c6d864bcd88d77a6733cf"
         };
-
+    
         const app = initializeApp(firebaseConfig);
         const auth = getAuth(app);
         const db = getDatabase(app);
-
-        let state = {
-            user: null,
-            price: 10,
-            isOpen: true,
-            isLogin: true
+    
+        // --- CONFIGURATION ---
+        const ADMIN_EMAIL = "antoninthorel@icloud.com";
+        let user = null;
+        let globalSettings = { stock: 0, price: 10, open: true };
+        let activeCheckout = null;
+    
+        // --- NAVIGATION ---
+        window.showPage = (id) => {
+            document.querySelectorAll('.page-section').forEach(p => p.classList.remove('active'));
+            const target = document.getElementById(`page-${id}`);
+            if(target) target.classList.add('active');
+            window.scrollTo(0,0);
+            if(id === 'admin-pos') initScanner();
         };
-
-        // 1. SYNC REGLAGES ADMIN
-        onValue(ref(db, 'reglages'), (snap) => {
-            const data = snap.val() || {};
-            state.price = data.prixUnitaire || 10;
-            state.isOpen = data.boutiqueOuverte !== false;
-            
-            document.getElementById('display-price').innerText = state.price + "€/KG";
-            document.getElementById('total-val').innerText = (document.getElementById('order-qty').value * state.price).toFixed(2);
-
-            if(!state.isOpen) {
-                document.getElementById('shop-closed-alert').classList.remove('hidden');
-                document.getElementById('btn-submit-order').classList.add('hidden');
-            } else if(state.user) {
-                document.getElementById('btn-submit-order').classList.remove('hidden');
-            }
-        });
-
-        // 2. AUTHENTIFICATION
-        window.toggleAuth = () => {
-            const modal = document.getElementById('auth-modal');
-            modal.classList.toggle('hidden');
+    
+        // --- AUTHENTIFICATION ---
+        let authMode = 'login';
+        window.setAuthMode = (m) => {
+            authMode = m;
+            const signupOnly = document.getElementById('signup-only');
+            if(signupOnly) signupOnly.classList.toggle('hidden', m === 'login');
         };
-
-        window.switchAuthMode = () => {
-            state.isLogin = !state.isLogin;
-            document.getElementById('auth-title').innerText = state.isLogin ? "Bon retour !" : "Rejoindre l'aventure";
-            document.getElementById('auth-main-btn').innerText = state.isLogin ? "Se connecter" : "Créer mon compte";
-            document.getElementById('auth-switch-btn').innerText = state.isLogin ? "Pas de compte ? Créer un profil" : "Déjà membre ? Se connecter";
-            document.getElementById('signup-fields').classList.toggle('hidden', state.isLogin);
-        };
-
-        window.handleAuthAction = async () => {
-            const email = document.getElementById('user-email').value;
-            const pass = document.getElementById('user-pass').value;
-
-            try {
-                if(state.isLogin) {
-                    await signInWithEmailAndPassword(auth, email, pass);
-                } else {
-                    const prenom = document.getElementById('user-prenom').value;
-                    const nom = document.getElementById('user-nom').value;
-                    const res = await createUserWithEmailAndPassword(auth, email, pass);
-                    await updateProfile(res.user, { displayName: `${prenom} ${nom}` });
-                    await set(ref(db, `users/${res.user.uid}`), { prenom, nom, email });
+    
+        const authForm = document.getElementById('auth-form');
+        if(authForm) {
+            authForm.onsubmit = async (e) => {
+                e.preventDefault();
+                const email = document.getElementById('auth-email').value;
+                const pass = document.getElementById('auth-pass').value;
+                try {
+                    if(authMode === 'signup') {
+                        const res = await createUserWithEmailAndPassword(auth, email, pass);
+                        const name = document.getElementById('reg-prenom').value;
+                        await updateProfile(res.user, { displayName: name });
+                        await set(ref(db, `users/${res.user.uid}`), {
+                            nom: document.getElementById('reg-nom').value,
+                            prenom: name,
+                            tel: document.getElementById('reg-tel').value,
+                            email: email
+                        });
+                    } else {
+                        await signInWithEmailAndPassword(auth, email, pass);
+                    }
+                    showPage('home');
+                } catch(e) { alert("Erreur : " + e.message); }
+            };
+        }
+    
+        window.logout = () => signOut(auth);
+    
+        onAuthStateChanged(auth, (u) => {
+            user = u;
+            const zone = document.getElementById('nav-auth-zone');
+            if(u) {
+                if(u.email === ADMIN_EMAIL) document.body.classList.add('is-admin');
+                if(zone) {
+                    zone.innerHTML = `
+                        <div class="flex items-center gap-4 cursor-pointer" onclick="showPage('client')">
+                            <div class="text-right hidden sm:block">
+                                <p class="text-[9px] font-black text-slate-400 uppercase tracking-widest">Compte</p>
+                                <p class="text-sm font-black italic">${u.displayName || u.email}</p>
+                            </div>
+                            <div class="h-10 w-10 rounded-xl bg-orange-500 text-white flex items-center justify-center shadow-lg"><i class="fa-solid fa-user"></i></div>
+                        </div>`;
                 }
-                toggleAuth();
-            } catch(e) { alert("Erreur: " + e.message); }
-        };
-
-        window.handleLogout = () => {
-            signOut(auth);
-            toggleSidebar();
-        };
-
-        onAuthStateChanged(auth, (user) => {
-            state.user = user;
-            if(user) {
-                document.getElementById('nav-auth-btn').classList.add('hidden');
-                document.getElementById('nav-user-info').classList.remove('hidden');
-                document.getElementById('nav-user-name').innerText = user.displayName || "Client";
-                document.getElementById('order-auth-warning').classList.add('hidden');
-                if(state.isOpen) document.getElementById('btn-submit-order').classList.remove('hidden');
-                
-                // Messagerie logic
-                document.getElementById('msg-auth-check').classList.add('hidden');
-                document.getElementById('msg-form').classList.remove('hidden');
-                document.getElementById('msg-sender-name').innerText = user.displayName;
-                
-                syncUserData(user);
+                loadClientData(u.uid);
             } else {
-                document.getElementById('nav-auth-btn').classList.remove('hidden');
-                document.getElementById('nav-user-info').classList.add('hidden');
-                document.getElementById('order-auth-warning').classList.remove('hidden');
-                document.getElementById('btn-submit-order').classList.add('hidden');
-                document.getElementById('msg-auth-check').classList.remove('hidden');
-                document.getElementById('msg-form').classList.add('hidden');
+                document.body.classList.remove('is-admin');
+                if(zone) zone.innerHTML = `<button onclick="showPage('login')" class="px-6 py-2 rounded-full border-2 border-slate-100 font-black text-[10px] uppercase tracking-widest hover:bg-slate-50 transition">Connexion</button>`;
             }
         });
-
-        // 3. COMMANDE & MESSAGERIE
-        window.changeQty = (delta) => {
-            const input = document.getElementById('order-qty');
-            let val = parseInt(input.value) + delta;
-            if(val < 1) val = 1;
-            input.value = val;
-            document.getElementById('total-val').innerText = (val * state.price).toFixed(2);
-        };
-
-        window.sendReservation = async () => {
-            if(!state.user) return;
-            const qty = parseFloat(document.getElementById('order-qty').value);
-            const orderId = "CAUX-" + Math.random().toString(36).substr(2, 6).toUpperCase();
-
-            const orderData = {
-                orderId,
-                userName: state.user.displayName,
-                userId: state.user.uid,
-                email: state.user.email,
-                poidsTotal: qty,
-                prixTotal: qty * state.price,
-                status: "ATTENTE",
-                timestamp: Date.now()
-            };
-
-            await set(ref(db, `reservations/${orderId}`), orderData);
-            alert("Réservation réussie ! Retrouvez votre QR Code dans votre espace client.");
-            toggleSidebar();
-        };
-
-        window.sendMessage = async () => {
-            const content = document.getElementById('msg-content').value;
-            if(!content) return;
-
-            const msgData = {
-                sender: state.user.displayName,
-                senderEmail: state.user.email,
-                userId: state.user.uid,
-                message: content,
-                timestamp: Date.now(),
-                read: false
-            };
-
-            await push(ref(db, 'messages'), msgData);
-            alert("Message envoyé à l'équipe !");
-            document.getElementById('msg-content').value = "";
-        };
-
-        // 4. SIDEBAR LOGIC
-        window.toggleSidebar = () => {
-            const sidebar = document.getElementById('client-sidebar');
-            const panel = document.getElementById('sidebar-panel');
-            if(sidebar.classList.contains('hidden')) {
-                sidebar.classList.remove('hidden');
-                setTimeout(() => panel.style.transform = "translateX(0)", 10);
-            } else {
-                panel.style.transform = "translateX(100%)";
-                setTimeout(() => sidebar.classList.add('hidden'), 500);
+    
+        // --- SYNCHRONISATION PARAMÈTRES ---
+        onValue(ref(db, 'settings'), (snap) => {
+            globalSettings = snap.val() || globalSettings;
+            
+            // Update Admin UI
+            const admStock = document.getElementById('adm-stock');
+            const admPrice = document.getElementById('adm-price');
+            if(admStock) admStock.value = globalSettings.stock;
+            if(admPrice) admPrice.value = globalSettings.price;
+    
+            const btn = document.getElementById('shop-toggle');
+            if(btn) {
+                btn.innerText = globalSettings.open ? "OUVERT" : "FERMÉ";
+                btn.className = globalSettings.open ? "w-full py-3 rounded-xl font-black text-[10px] uppercase bg-green-500 text-white" : "w-full py-3 rounded-xl font-black text-[10px] uppercase bg-red-500 text-white";
             }
-        };
-
-        function syncUserData(user) {
-            document.getElementById('side-info-name').innerText = user.displayName;
-            document.getElementById('side-info-email').innerText = user.email;
-
-            onValue(ref(db, 'reservations'), (snap) => {
-                const data = snap.val();
-                if(!data) return;
-                const myOrder = Object.values(data).find(o => o.userId === user.uid && o.status !== "FINI");
+    
+            // Update Client UI
+            const cStock = document.getElementById('client-stock');
+            const cPrice = document.getElementById('client-price');
+            if(cStock) {
+                cStock.innerText = globalSettings.stock + " KG";
+                cPrice.innerText = globalSettings.price + " €";
+                const isClosed = !globalSettings.open || globalSettings.stock <= 0;
+                document.getElementById('shop-locked').classList.toggle('hidden', !isClosed);
+                document.getElementById('shop-grid').classList.toggle('hidden', isClosed);
+            }
+        });
+    
+        window.updateSettings = (key, val) => update(ref(db, 'settings'), { [key]: parseFloat(val) });
+        window.toggleShop = () => update(ref(db, 'settings'), { open: !globalSettings.open });
+    
+        // --- LOGIQUE COMMANDE CLIENT (WEB) ---
+        window.order = async (kg) => {
+            if(!user) return showPage('login');
+            if(kg > globalSettings.stock) return alert("Stock insuffisant !");
+            
+            const orderId = "CL-" + Math.floor(1000 + Math.random() * 9000);
+            const total = kg * globalSettings.price;
+            
+            const data = {
+                id: orderId,
+                uid: user.uid,
+                email: user.email,
+                client: user.displayName || user.email,
+                kg: kg,
+                total: total,
+                item: "Réservation Colis Perdus",
+                status: "En attente",
+                date: new Date().toLocaleDateString('fr-FR')
+            };
+    
+            try {
+                // On décompte le stock IMMÉDIATEMENT à la réservation
+                const newStock = globalSettings.stock - kg;
+                await update(ref(db, 'settings'), { stock: newStock });
+                await set(ref(db, `orders/${orderId}`), data);
                 
-                if(myOrder) {
-                    document.getElementById('sidebar-order-empty').classList.add('hidden');
-                    document.getElementById('sidebar-order-active').classList.remove('hidden');
-                    document.getElementById('side-id').innerText = "#" + myOrder.orderId;
-                    document.getElementById('side-total').innerText = myOrder.prixTotal.toFixed(2) + "€";
-                    document.getElementById('side-qr').innerHTML = `<img src="https://api.qrserver.com/v1/create-qr-code/?size=180x180&data=${myOrder.orderId}" class="w-40 h-40">`;
-                } else {
-                    document.getElementById('sidebar-order-empty').classList.remove('hidden');
-                    document.getElementById('sidebar-order-active').classList.add('hidden');
+                alert("C'est réservé ! RDV samedi à Rives-en-Seine avec votre QR Code.");
+                showPage('client');
+            } catch(e) { alert("Erreur : " + e.message); }
+        };
+    
+        function loadClientData(uid) {
+            onValue(ref(db, `users/${uid}`), (snap) => {
+                const d = snap.val();
+                if(d && document.getElementById('prof-nom')) {
+                    document.getElementById('prof-nom').value = d.nom;
+                    document.getElementById('prof-prenom').value = d.prenom;
+                    document.getElementById('prof-tel').value = d.tel;
+                }
+            });
+            onValue(ref(db, 'orders'), (snap) => {
+                const container = document.getElementById('client-orders');
+                if(!container) return;
+                container.innerHTML = "";
+                const data = snap.val();
+                if(data) {
+                    Object.values(data).filter(o => o.uid === uid).forEach(o => {
+                        const div = document.createElement('div');
+                        div.className = "p-8 bg-slate-50 rounded-3xl flex flex-col md:flex-row justify-between items-center gap-6 mb-4 border border-slate-100";
+                        div.innerHTML = `
+                            <div>
+                                <p class="text-[9px] font-black text-orange-500 uppercase tracking-widest">ID: ${o.id}</p>
+                                <p class="text-3xl font-serif italic">${o.kg} KG de Colis</p>
+                                <p class="font-bold text-slate-400">À régler sur place : ${o.total.toFixed(2)} €</p>
+                            </div>
+                            <div id="qr-${o.id}" class="bg-white p-2 rounded-xl shadow-sm"></div>
+                        `;
+                        container.prepend(div);
+                        new QRCode(document.getElementById(`qr-${o.id}`), { text: o.id, width: 120, height: 120 });
+                    });
                 }
             });
         }
+    
+        // --- LOGIQUE CAISSE (POS) ---
+        let html5QrCode = null;
+        function initScanner() {
+            if(!html5QrCode && document.getElementById("reader")) {
+                html5QrCode = new Html5Qrcode("reader");
+                html5QrCode.start({ facingMode: "environment" }, { fps: 10, qrbox: 250 }, (txt) => lookupOrder(txt))
+                .catch(err => console.log("Scanner non prêt"));
+            }
+        }
+    
+        window.lookupOrder = (id) => {
+            onValue(ref(db, `orders/${id}`), (snap) => {
+                const o = snap.val();
+                if(o) {
+                    activeCheckout = { ...o, type: "RÉSERVATION WEB" };
+                    showCheckoutModal();
+                } else { alert("ID Commande introuvable."); }
+            }, { onlyOnce: true });
+        };
+    
+        window.previewDirect = () => {
+            const kg = document.getElementById('pos-direct-kg').value;
+            if(!kg || kg <= 0) return alert("Poids invalide");
+            activeCheckout = {
+                id: "STAND-" + Math.floor(Math.random()*999),
+                kg: parseFloat(kg),
+                total: kg * globalSettings.price,
+                type: "VENTE STAND",
+                item: "Pesée Directe (Marché)",
+                client: "Client de passage",
+                date: new Date().toLocaleDateString('fr-FR')
+            };
+            showCheckoutModal();
+        };
+    
+        function showCheckoutModal() {
+            const modal = document.getElementById('checkout-confirm');
+            if(!modal) return;
+            modal.classList.remove('hidden');
+            document.getElementById('confirm-type').innerText = activeCheckout.type;
+            document.getElementById('confirm-price').innerText = activeCheckout.total.toFixed(2) + " €";
+            document.getElementById('confirm-details').innerText = `${activeCheckout.kg} KG - ${activeCheckout.client}`;
+        }
+    
+        window.cancelCheckout = () => {
+            document.getElementById('checkout-confirm').classList.add('hidden');
+            activeCheckout = null;
+        };
+    
+        window.finalizeCheckout = async () => {
+            if(!activeCheckout) return;
+            try {
+                const saleData = { ...activeCheckout, timestamp: Date.now() };
+                // Enregistre la vente
+                await push(ref(db, 'sales'), saleData);
+                
+                if(activeCheckout.type === "RÉSERVATION WEB") {
+                    // On supprime la réservation (le stock a déjà été décompté à la commande)
+                    await remove(ref(db, `orders/${activeCheckout.id}`));
+                } else {
+                    // Pour une vente stand, on décompte maintenant
+                    const newStock = globalSettings.stock - activeCheckout.kg;
+                    await update(ref(db, 'settings'), { stock: newStock });
+                }
+                
+                // DÉCLENCHE LA FACTURE
+                triggerInvoiceDownload(activeCheckout);
+                
+                cancelCheckout();
+                document.getElementById('pos-direct-kg').value = "";
+                alert("Vendu ! Facture téléchargée.");
+            } catch(e) { alert("Erreur finalisation : " + e.message); }
+        };
+    
+        // --- MOTEUR DE FACTURATION (GHOST RENDERING) ---
+        window.openManualInvoice = () => document.getElementById('manual-invoice-modal').classList.remove('hidden');
+        window.closeManualInvoice = () => document.getElementById('manual-invoice-modal').classList.add('hidden');
+    
+        window.generateManualInvoice = () => {
+            const data = {
+                id: "MAN-" + Math.floor(Math.random()*9000),
+                client: document.getElementById('man-client').value || "Client de passage",
+                item: document.getElementById('man-item').value || "Lot Spécial",
+                kg: parseFloat(document.getElementById('man-qty').value || 1),
+                total: parseFloat(document.getElementById('man-price').value || 0),
+                date: new Date().toLocaleDateString('fr-FR')
+            };
+            triggerInvoiceDownload(data);
+            closeManualInvoice();
+        };
+    
+        function triggerInvoiceDownload(data) {
+            const zone = document.getElementById('invoice-render-zone');
+            if(!zone) return;
+    
+            // Remplissage des champs
+            document.getElementById('inv-render-id').innerText = "#" + data.id;
+            document.getElementById('inv-render-date').innerText = data.date || new Date().toLocaleDateString('fr-FR');
+            document.getElementById('inv-render-client').innerText = data.client || "Client de passage";
+            
+            const ht = (data.total / 1.2).toFixed(2);
+            const tva = (data.total - (data.total / 1.2)).toFixed(2);
+            
+            document.getElementById('inv-render-rows').innerHTML = `
+                <tr>
+                    <td style="padding: 20px 0; border-bottom: 1px solid #f1f5f9;">${data.item}</td>
+                    <td style="padding: 20px 0; border-bottom: 1px solid #f1f5f9; text-align: center;">${data.kg}</td>
+                    <td style="padding: 20px 0; border-bottom: 1px solid #f1f5f9; text-align: right;">${(data.total / data.kg).toFixed(2)} €</td>
+                    <td style="padding: 20px 0; border-bottom: 1px solid #f1f5f9; text-align: right;">${data.total.toFixed(2)} €</td>
+                </tr>`;
+            
+            document.getElementById('inv-render-ht').innerText = ht + " €";
+            document.getElementById('inv-render-tva').innerText = tva + " €";
+            document.getElementById('inv-render-total').innerText = data.total.toFixed(2) + " €";
+    
+            const opt = {
+                margin: 0,
+                filename: `Facture-${data.id}.pdf`,
+                image: { type: 'jpeg', quality: 1 },
+                html2canvas: { scale: 3, useCORS: true, letterRendering: true },
+                jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
+            };
+    
+            // On s'assure que les images (logo) sont chargées avant le PDF
+            html2pdf().set(opt).from(zone).toPdf().get('pdf').save();
+        }
+    
+        // --- ADMINISTRATION (SALES & MESSAGES) ---
+        onValue(ref(db, 'sales'), (snap) => {
+            const container = document.getElementById('adm-sales');
+            if(!container) return;
+            const data = snap.val();
+            let totalCA = 0;
+            container.innerHTML = "";
+            if(data) {
+                Object.values(data).reverse().forEach(s => {
+                    totalCA += s.total;
+                    container.innerHTML += `
+                        <div class="flex justify-between items-center p-4 bg-slate-50 rounded-2xl mb-2">
+                            <div>
+                                <p class="text-[9px] font-black uppercase text-slate-400">${s.type}</p>
+                                <p class="text-xs font-bold text-slate-800">${s.kg} KG - ${s.id}</p>
+                            </div>
+                            <p class="font-black text-green-600">+ ${s.total.toFixed(2)} €</p>
+                        </div>`;
+                });
+            }
+            const admCa = document.getElementById('adm-ca');
+            if(admCa) admCa.innerText = totalCA.toFixed(2) + " €";
+        });
+    
+        window.sendMessage = async () => {
+            const txt = document.getElementById('msg-content').value;
+            if(!txt || !user) return;
+            await push(ref(db, 'messages'), { email: user.email, text: txt, timestamp: Date.now() });
+            document.getElementById('msg-content').value = "";
+            alert("Message envoyé !");
+        };
+    
+        onValue(ref(db, 'messages'), (snap) => {
+            const container = document.getElementById('adm-messages');
+            if(!container) return;
+            container.innerHTML = "";
+            const data = snap.val();
+            if(data) {
+                Object.values(data).reverse().forEach(m => {
+                    container.innerHTML += `
+                        <div class="p-4 bg-slate-50 rounded-xl mb-2 border-l-4 border-orange-500">
+                            <p class="text-[9px] font-black text-slate-400 uppercase">${m.email}</p>
+                            <p class="text-sm italic">"${m.text}"</p>
+                        </div>`;
+                });
+            }
+        });
+    
     </script>
 </body>
 </html>
